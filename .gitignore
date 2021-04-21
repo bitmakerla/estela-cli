@@ -5,3 +5,6 @@ dist
 .eggs/
 .tox
 /.coverage
+scraping-product-entrypoint
+.idea/
+.env
