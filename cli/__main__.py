@@ -11,15 +11,12 @@ from .bm_client import BmClient
 DOCKERFILE = """\
 FROM python:$python_version
 
-RUN pip install scrapy # must be requirements.txt
+# must be in base image
+RUN pip install scrapy
+RUN pip install git+https://github.com/bitmakerla/bitmaker-entrypoint.git
 
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app
-
-# Entrypoint must be in pypi
-# For now, the entrypoint should be in the folder
-WORKDIR /usr/src/app/scraping-product-entrypoint
-RUN python setup.py install
 
 WORKDIR /usr/src/app
 """
@@ -59,7 +56,7 @@ def gen_dockerfile():
 
     template = Template(DOCKERFILE)
     values = {
-        'python_version':   '3',
+        'python_version': '3',
     }
     result = template.substitute(values)
     with open(dockerfile_path, 'w') as dockerfile:
