@@ -12,14 +12,15 @@ DOCKERFILE = """\
 FROM python:$python_version
 
 # must be in base image
-RUN pip install scrapy
 RUN pip install git+https://github.com/bitmakerla/bitmaker-entrypoint.git
 
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app
-
 WORKDIR /usr/src/app
+RUN mkdir /fifo-data
 """
+
+DOCKERFILE_NAME = 'Dockerfile-bitmaker'
 
 BITMAKER_YAML = """\
 project:
@@ -30,6 +31,10 @@ project:
 
 def get_project_path():
     return os.path.abspath('.')
+
+
+def get_host():
+    return os.environ.get('BM_HOST', '127.0.0.1')
 
 
 def get_bm_settings():
@@ -49,49 +54,39 @@ def gen_project_package():
     settings = ConfigParser()
 
 
-def gen_dockerfile():
+def gen_dockerfile(raise_errors=False):
     project_path = get_project_path()
-    dockerfile_path = os.path.join(project_path, 'Dockerfile')
-    assert not os.path.exists(dockerfile_path), 'Dockerfile already exists'
+    dockerfile_path = os.path.join(project_path, DOCKERFILE_NAME)
+
+    if os.path.exists(dockerfile_path):
+        assert not raise_errors, 'Dockerfile already exists'
+        return
 
     template = Template(DOCKERFILE)
     values = {
-        'python_version': '3',
+        'python_version': '3.6',
     }
     result = template.substitute(values)
     with open(dockerfile_path, 'w') as dockerfile:
         dockerfile.write(result)
 
 
-def generate_config():
-    project_path = get_project_path()
-    bm_yaml_path = os.path.join(project_path, 'bitmaker.yaml')
-    assert not os.path.exists(bm_yaml_path), 'bitmaker.yaml already exists.'
-
-    bm_client = BmClient()
-    project = bm_client.create_project('test')
-
-    template = Template(BITMAKER_YAML)
-    values = {
-        'project_pid': project['pid'],
-        'container_image': project['container_image']
-    }
-    result = template.substitute(values)
-    with open(bm_yaml_path, 'w') as bm_yaml:
-        bm_yaml.write(result)
-
-
 def build_image():
     project_path = get_project_path()
     bm_settings = get_bm_settings()
     docker_client = docker.from_env()
-    docker_client.images.build(path=project_path, tag=bm_settings['project']['bm_image'])
+    docker_client.images.build(
+        nocache=True,
+        path=project_path,
+        dockerfile=DOCKERFILE_NAME,
+        tag=bm_settings['project']['bm_image'],
+    )
 
 
 def upload_image():
     bm_settings = get_bm_settings()
     docker_client = docker.from_env()
-    bm_client = BmClient()
+    bm_client = BmClient(host=get_host())
     repository, image_name = bm_settings['project']['bm_image'].split(':')
     project = bm_client.get_project(bm_settings['project']['pid'])
     username, password = base64.b64decode(project['token']).decode().split(':')
@@ -100,7 +95,6 @@ def upload_image():
 
 
 def deploy():
-    bm_settings = get_bm_settings()
-    bm_client = BmClient()
-    spider = bm_client.create_spider(pid=bm_settings['project']['pid'], name='spider')
-    bm_client.create_spider_job(pid=bm_settings['project']['pid'], sid=spider['sid'])
+    gen_dockerfile()
+    build_image()
+    upload_image()
