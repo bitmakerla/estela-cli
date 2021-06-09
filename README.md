@@ -8,16 +8,10 @@ python setup.py install
 
 ## Commands
 
-To create Dockerfile
+To init a Bitmaker project (create Dockerfile and bitmaker.yaml)
 
 ```
-$ bm-gen-dockerfile
-```
-
-To create bitmaker.yaml
-
-```
-$ bm-gen-config
+$ bm-init
 ```
 
 To build docker image
@@ -32,7 +26,7 @@ To upload docker image
 $ bm-upload-image
 ```
 
-To deploy project (run spiders)
+To deploy project (build and upload)
 
 ```
 $ bm-deploy
