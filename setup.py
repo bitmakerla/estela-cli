@@ -1,21 +1,20 @@
 from setuptools import setup, find_packages
+from bm_cli.__main__ import __version__
 
 setup(
-    name='bitmaker mesh',
-    version='0.1',
-    description='Dockerfile creation',
+    name="bitmaker",
+    version=__version__,
+    description="Bitmaker Command Line Interface",
     packages=find_packages(),
     entry_points={
-        'console_scripts': [
-            'bm-build-image = cli.__main__:build_image',
-            'bm-upload-image = cli.__main__:upload_image',
-            'bm-init = cli.__main__:init',
-            'bm-deploy = cli.__main__:deploy',
+        "console_scripts": [
+            "bitmaker = bm_cli.__main__:cli",
         ],
     },
     install_requires=[
-        'requests',
-        'docker',
-        'pyyaml',
-    ]
+        "requests",
+        "docker",
+        "pyyaml",
+        "click",
+    ],
 )

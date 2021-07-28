@@ -8,6 +8,8 @@ certifi==2020.12.5
     # via requests
 chardet==4.0.0
     # via requests
+click==8.0.1
+    # via -r requirements/base.in
 docker==5.0.0
     # via -r requirements/base.in
 idna==2.10

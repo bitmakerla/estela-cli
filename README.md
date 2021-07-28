@@ -1,40 +1,38 @@
 # Bitmaker Scraping Product CLI
 
-## Install
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-```
-python setup.py install
-```
+```bash
+$ bitmaker
+Usage: bitmaker [OPTIONS] COMMAND [ARGS]...
 
-## Commands
+Options:
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
 
-To init a Bitmaker project (create Dockerfile and bitmaker.yaml)
-
-```
-$ bm-init
-```
-
-To build docker image
-
-```
-$ bm-build-image
+Commands:
+  deploy  Deploy Scrapy project to Bitmaker Cloud
+  init    Create Dockerfile and Bitmaker file for existing scrapy project
+  login   Save your credentials
+  logout  Remove your credentials
 ```
 
-To upload docker image
+## Installation
 
-```
-$ bm-upload-image
-```
-
-To deploy project (build and upload)
-
-```
-$ bm-deploy
+```bash
+$ python setup.py install
 ```
 
 ## Testing
 
-```
+```bash
 $ pip install -r requirements/test.txt
 $ python tests.py
+```
+
+## Formatting 
+
+```bash
+$ pip install -r requirements/dev.txt
+$ black .
 ```

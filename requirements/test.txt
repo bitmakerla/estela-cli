@@ -12,6 +12,8 @@ chardet==4.0.0
     # via
     #   -r requirements/base.txt
     #   requests
+click==8.0.1
+    # via -r requirements/base.txt
 docker==5.0.0
     # via -r requirements/base.txt
 idna==2.10
