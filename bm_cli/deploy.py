@@ -2,10 +2,11 @@ import os
 import docker
 import base64
 import click
+import json
 
 from bm_cli.utils import get_project_path, get_bm_settings
 from bm_cli.login import login
-from bm_cli.templates import DOCKERFILE_NAME
+from bm_cli.templates import DOCKERFILE_NAME, BITMAKER_YAML_NAME, CLOCK_EMOJI
 
 
 SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
@@ -16,7 +17,7 @@ def build_image():
     bm_settings = get_bm_settings()
     try:
         docker_client = docker.from_env()
-        click.echo("Building image...")
+        click.echo("{} Building image ...".format(CLOCK_EMOJI))
         docker_client.images.build(
             nocache=True,
             path=project_path,
@@ -40,7 +41,7 @@ def upload_image(bm_client):
 
     try:
         docker_client = docker.from_env()
-        click.echo("Uploading image...")
+        click.echo("{} Uploading image ...".format(CLOCK_EMOJI))
         docker_client.images.push(
             repository=repository, tag=image_name, auth_config=auth_config
         )
@@ -50,8 +51,41 @@ def upload_image(bm_client):
     click.echo("Image uploaded successfully.")
 
 
+def update_spider_list(bm_client):
+    bm_settings = get_bm_settings()
+    project = bm_client.get_project(bm_settings["project"]["pid"])
+    click.echo("{} Updating spider list ...".format(CLOCK_EMOJI))
+
+    try:
+        docker_client = docker.from_env()
+        output = docker_client.containers.run(
+            bm_settings["project"]["bm_image"], "bm-describe-project", auto_remove=True
+        )
+        spiders = json.loads(output)["spiders"]
+        bm_client.set_related_spiders(project["pid"], spiders)
+    except Exception as ex:
+        raise click.ClickException(str(ex))
+
+    click.echo("Spider list updated successfully.")
+
+
 @click.command(short_help=SHORT_HELP)
 def bm_command():
     bm_client = login()
+    bm_settings = get_bm_settings()
+
+    try:
+        docker_client = docker.from_env()
+    except:
+        raise click.ClickException(
+            "Cannot connect to the Docker daemon. Is the docker daemon running?"
+        )
+
+    try:
+        bm_client.get_project(bm_settings["project"]["pid"])
+    except:
+        raise click.ClickException("Invalid {} file".format(BITMAKER_YAML_NAME))
+
     build_image()
     upload_image(bm_client)
+    update_spider_list(bm_client)

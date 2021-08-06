@@ -41,7 +41,7 @@ def get_bm_auth():
     bm_auth_path = os.path.join(home_path, BITMAKER_AUTH_NAME)
 
     if not os.path.exists(bm_auth_path):
-        return
+        return None
 
     with open(bm_auth_path, "r") as bm_auth_yaml:
         bm_auth = yaml.full_load(bm_auth_yaml)

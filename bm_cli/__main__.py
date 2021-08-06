@@ -18,6 +18,7 @@ commands = [
     "login",
     "logout",
     "init",
+    "context",
 ]
 
 for command in commands:

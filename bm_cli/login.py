@@ -48,7 +48,7 @@ def yaml_login():
         bm_client = BmClient(bm_auth["host"], token=bm_auth["token"])
     except:
         raise Exception(
-            "Invalid token stored in ~/{}. Please login again to refresh the token.".format(
+            "Invalid context stored in ~/{}. Please login again.".format(
                 BITMAKER_AUTH_NAME
             )
         )

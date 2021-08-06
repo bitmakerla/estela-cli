@@ -11,10 +11,11 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
-  deploy  Deploy Scrapy project to Bitmaker Cloud
-  init    Create Dockerfile and Bitmaker file for existing scrapy project
-  login   Save your credentials
-  logout  Remove your credentials
+  context  Show your current context
+  deploy   Deploy Scrapy project to Bitmaker Cloud
+  init     Create Dockerfile and Bitmaker file for existing scrapy project
+  login    Save your credentials
+  logout   Remove your credentials
 ```
 
 ## Installation

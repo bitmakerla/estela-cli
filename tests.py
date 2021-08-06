@@ -54,7 +54,14 @@ class TestBMClient(unittest.TestCase):
     def test_not_found_project(self):
         with self.assertRaises(Exception) as error:
             self.client.get_project(pid="wrong_pid")
-        self.assertEqual(str(error.exception), "Not found.")
+        self.assertIn("Expecting value:", str(error.exception))
+
+    def test_not_permission_project(self):
+        with self.assertRaises(Exception) as error:
+            self.client.get_project(pid="00000000-0000-0000-0000-000000000000")
+        self.assertEqual(
+            str(error.exception), "You do not have permission to perform this action."
+        )
 
     def test_get_projects(self):
         project_name = "test_project"
@@ -75,6 +82,31 @@ class TestBMClient(unittest.TestCase):
         self.assertIsNotNone(project["token"])
         self.assertIsNot(project["token"], "")
         self.assertEqual(project["name"], project_name)
+
+        self.client.delete_project(project["pid"])
+
+    def test_get_spiders_and_set_related_spiders(self):
+        project = self.client.create_project(name="test_project")
+
+        response = self.client.set_related_spiders(
+            pid=project["pid"], spiders=["spider1", "spider2"]
+        )
+        spiders = self.client.get_spiders(pid=project["pid"])
+
+        spider1 = [
+            sp
+            for sp in spiders
+            if sp["name"] == "spider1" and sp["project"] == project["pid"]
+        ][0]
+        spider2 = [
+            sp
+            for sp in spiders
+            if sp["name"] == "spider2" and sp["project"] == project["pid"]
+        ][0]
+
+        self.assertIn("spiders_names", response)
+        self.assertIn("sid", spider1)
+        self.assertIn("sid", spider2)
 
         self.client.delete_project(project["pid"])
 
