@@ -39,3 +39,10 @@ project:
   pid: $project_pid
   bm_image: $container_image
 """
+
+
+# General templates
+
+OK_EMOJI = "\U00002705"
+BAD_EMOJI = "\U0000274C"
+CLOCK_EMOJI = "\U000023F3"

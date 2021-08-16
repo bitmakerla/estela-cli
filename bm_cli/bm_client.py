@@ -13,9 +13,9 @@ class BmSimpleClient:
                 "username": username,
                 "password": password,
             }
-            response = self.post("login/", data)
+            response = self.post("auth/login", data)
             self.check_status(response, 200, "non_field_errors")
-            self.token = response.json()["token"]
+            self.token = response.json()["key"]
         else:
             self.token = token
             response = self.get("projects")
@@ -113,3 +113,15 @@ class BmClient(BmSimpleClient):
         endpoint = "projects/{}".format(pid)
         response = self.delete(endpoint)
         self.check_status(response, 204)
+
+    def get_spiders(self, pid):
+        endpoint = "projects/{}/spiders".format(pid)
+        response = self.get(endpoint, paginated=True)
+        return response
+
+    def set_related_spiders(self, pid, spiders):
+        endpoint = "projects/{}/set_related_spiders".format(pid)
+        data = {"spiders_names": spiders}
+        response = self.put(endpoint, data=data)
+        self.check_status(response, 200)
+        return response.json()
