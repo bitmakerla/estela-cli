@@ -16,5 +16,6 @@ setup(
         "docker",
         "pyyaml",
         "click",
+        "tabulate",
     ],
 )

@@ -12,10 +12,14 @@ Options:
 
 Commands:
   context  Show your current context
+  create   Create a resource
+  delete   Delete a resource
   deploy   Deploy Scrapy project to Bitmaker Cloud
-  init     Create Dockerfile and Bitmaker file for existing scrapy project
+  init     Initialize bitmaker project for existing scrapy project
+  list     Display the available resources
   login    Save your credentials
   logout   Remove your credentials
+  stop     Stop an active job or cronjob
 ```
 
 ## Installation

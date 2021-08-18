@@ -3,25 +3,27 @@ import click
 
 from string import Template
 from bm_cli.login import login
-from bm_cli.utils import get_project_path
+from bm_cli.utils import get_project_path, get_bm_yaml_path, get_bm_dockerfile_path
 from bm_cli.templates import (
     DOCKERFILE,
     DOCKERFILE_NAME,
     BITMAKER_YAML,
     BITMAKER_YAML_NAME,
     DOCKER_DEFAULT_REQUIREMENTS,
+    BITMAKER_DIR,
 )
 
 
-SHORT_HELP = "Create Dockerfile and Bitmaker file for existing scrapy project"
+SHORT_HELP = "Initialize bitmaker project for existing scrapy project"
 
 
 def gen_bm_yaml(bm_client, pid=None):
-    project_path = get_project_path()
-    bm_yaml_path = os.path.join(project_path, BITMAKER_YAML_NAME)
+    bm_yaml_path = get_bm_yaml_path()
 
     if os.path.exists(bm_yaml_path):
-        raise click.ClickException("{} file already exists.".format(BITMAKER_YAML_NAME))
+        raise click.ClickException(
+            "{}/{} file already exists.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
+        )
 
     try:
         if pid is None:
@@ -42,16 +44,20 @@ def gen_bm_yaml(bm_client, pid=None):
 
     with open(bm_yaml_path, "w") as bm_yaml:
         bm_yaml.write(result)
-        click.echo("{} file created successfully.".format(BITMAKER_YAML_NAME))
+        click.echo(
+            "{}/{} file created successfully.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
+        )
 
 
 def gen_dockerfile(requirements_path):
-    project_path = get_project_path()
-    dockerfile_path = os.path.join(project_path, DOCKERFILE_NAME)
+    dockerfile_path = get_bm_dockerfile_path()
 
     if os.path.exists(dockerfile_path):
-        raise click.ClickException("{} already exists.".format(DOCKERFILE_NAME))
+        raise click.ClickException(
+            "{}/{} already exists.".format(BITMAKER_DIR, DOCKERFILE_NAME)
+        )
 
+    project_path = get_project_path()
     requirements_local_path = os.path.join(project_path, requirements_path)
     if not os.path.exists(requirements_local_path):
         with open(requirements_local_path, "w") as requirementes:
@@ -66,11 +72,11 @@ def gen_dockerfile(requirements_path):
 
     with open(dockerfile_path, "w") as dockerfile:
         dockerfile.write(result)
-        click.echo("{} created successfully.".format(DOCKERFILE_NAME))
+        click.echo("{}/{} created successfully.".format(BITMAKER_DIR, DOCKERFILE_NAME))
 
 
 @click.command(short_help=SHORT_HELP)
-@click.option("--pid", help="Bitmaker project ID")
+@click.argument("pid", required=True)
 @click.option(
     "-r",
     "--requirements",
@@ -79,6 +85,14 @@ def gen_dockerfile(requirements_path):
     show_default=True,
 )
 def bm_command(pid, requirements):
+    """Initialize bitmaker project
+
+    PID is the project's pid
+    """
+
+    if not os.path.exists(BITMAKER_DIR):
+        os.makedirs(BITMAKER_DIR)
+
     bm_client = login()
     gen_bm_yaml(bm_client, pid)
     gen_dockerfile(requirements)

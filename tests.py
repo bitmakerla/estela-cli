@@ -110,6 +110,65 @@ class TestBMClient(unittest.TestCase):
 
         self.client.delete_project(project["pid"])
 
+    def test_create_spider_job(self):
+        project = self.client.create_project(name="test_project")
+        self.client.set_related_spiders(pid=project["pid"], spiders=["spider1"])
+        spider = self.client.get_spiders(pid=project["pid"])[0]
+        job = self.client.create_spider_job(
+            pid=project["pid"], sid=spider["sid"], job_type="SINGLE_JOB"
+        )
+
+        self.assertIn("jid", job)
+        self.assertIn("name", job)
+        self.assertIn("args", job)
+        self.assertIn("job_type", job)
+        self.assertIn("schedule", job)
+        self.assertEqual(job["job_status"], "WAITING")
+
+        response = self.client.stop_spider_job(
+            pid=project["pid"], sid=spider["sid"], jid=job["jid"]
+        )
+        self.assertEqual(response["job_status"], "STOPPED")
+
+        self.client.delete_project(project["pid"])
+
+    def test_get_spider_jobs(self):
+        project = self.client.create_project(name="test_project")
+        self.client.set_related_spiders(pid=project["pid"], spiders=["spider"])
+        spider = self.client.get_spiders(pid=project["pid"])[0]
+        job1 = self.client.create_spider_job(
+            pid=project["pid"], sid=spider["sid"], job_type="SINGLE_JOB"
+        )
+        job2 = self.client.create_spider_job(
+            pid=project["pid"], sid=spider["sid"], job_type="CRON_JOB"
+        )
+
+        jobs = self.client.get_spider_jobs(pid=project["pid"], sid=spider["sid"])
+
+        job1 = [
+            job
+            for job in jobs
+            if job["jid"] == job1["jid"] and job["spider"] == spider["sid"]
+        ][0]
+        job2 = [
+            job
+            for job in jobs
+            if job["jid"] == job2["jid"] and job["spider"] == spider["sid"]
+        ][0]
+
+        self.assertIn("jid", job1)
+        self.assertIn("jid", job2)
+        self.assertEqual(job1["job_type"], "SINGLE_JOB")
+        self.assertEqual(job2["job_type"], "CRON_JOB")
+
+        self.client.stop_spider_job(
+            pid=project["pid"], sid=spider["sid"], jid=job1["jid"]
+        )
+        self.client.stop_spider_job(
+            pid=project["pid"], sid=spider["sid"], jid=job2["jid"]
+        )
+        self.client.delete_project(project["pid"])
+
 
 if __name__ == "__main__":
     load_dotenv()

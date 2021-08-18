@@ -15,7 +15,7 @@ from bm_cli.utils import (
 from bm_cli.templates import BITMAKER_AUTH_NAME, BITMAKER_AUTH
 
 
-DEFAULT_BM_API_HOST = "http://104.248.108.208:8000"
+DEFAULT_BM_API_HOST = "http://178.128.134.208:8000"
 
 
 SHORT_HELP = "Save your credentials"
