@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
-from bm_cli.__main__ import __version__
 
 setup(
     name="bitmaker",
-    version=__version__,
+    version="0.1",
     description="Bitmaker Command Line Interface",
     packages=find_packages(),
     entry_points={
@@ -17,5 +16,11 @@ setup(
         "pyyaml",
         "click",
         "tabulate",
+    ],
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Topic :: Utilities",
     ],
 )
