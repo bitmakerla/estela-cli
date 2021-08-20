@@ -14,6 +14,10 @@ def cli():
 
 
 commands = [
+    "list",
+    "create",
+    "delete",
+    "stop",
     "deploy",
     "login",
     "logout",

@@ -4,9 +4,9 @@ import base64
 import click
 import json
 
-from bm_cli.utils import get_project_path, get_bm_settings
+from bm_cli.utils import get_project_path, get_bm_settings, get_bm_dockerfile_path
 from bm_cli.login import login
-from bm_cli.templates import DOCKERFILE_NAME, BITMAKER_YAML_NAME, CLOCK_EMOJI
+from bm_cli.templates import CLOCK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME
 
 
 SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
@@ -21,7 +21,7 @@ def build_image():
         docker_client.images.build(
             nocache=True,
             path=project_path,
-            dockerfile=DOCKERFILE_NAME,
+            dockerfile=get_bm_dockerfile_path(),
             tag=bm_settings["project"]["bm_image"],
         )
         docker_client.containers.prune()
@@ -84,7 +84,9 @@ def bm_command():
     try:
         bm_client.get_project(bm_settings["project"]["pid"])
     except:
-        raise click.ClickException("Invalid {} file".format(BITMAKER_YAML_NAME))
+        raise click.ClickException(
+            "Invalid project at {}/{}.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
+        )
 
     build_image()
     upload_image(bm_client)

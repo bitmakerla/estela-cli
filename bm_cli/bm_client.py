@@ -37,7 +37,7 @@ class BmSimpleClient:
             data = {}
         headers = self.get_default_headers()
         return requests.post(
-            self.url_for(endpoint), data=data, headers=headers, params=params
+            self.url_for(endpoint), json=data, headers=headers, params=params
         )
 
     def get(self, endpoint, params=None, paginated=False):
@@ -61,7 +61,7 @@ class BmSimpleClient:
             return content
         return response
 
-    def put(self, endpoint, data, params=None):
+    def put(self, endpoint, data=None, params=None):
         if params is None:
             params = {}
         if data is None:
@@ -119,9 +119,39 @@ class BmClient(BmSimpleClient):
         response = self.get(endpoint, paginated=True)
         return response
 
+    def get_spider(self, pid, sid):
+        endpoint = "projects/{}/spiders/{}".format(pid, sid)
+        response = self.get(endpoint)
+        self.check_status(response, 200)
+        return response.json()
+
     def set_related_spiders(self, pid, spiders):
         endpoint = "projects/{}/set_related_spiders".format(pid)
         data = {"spiders_names": spiders}
         response = self.put(endpoint, data=data)
+        self.check_status(response, 200)
+        return response.json()
+
+    def get_spider_jobs(self, pid, sid):
+        endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
+        response = self.get(endpoint, paginated=True)
+        return response
+
+    def get_spider_job(self, pid, sid, jid):
+        endpoint = "projects/{}/spiders/{}/jobs/{}".format(pid, sid, jid)
+        response = self.get(endpoint)
+        self.check_status(response, 200)
+        return response.json()
+
+    def create_spider_job(self, pid, sid, job_type="", args=[], schedule=""):
+        endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
+        data = {"job_type": job_type, "args": args, "schedule": schedule}
+        response = self.post(endpoint, data=data)
+        self.check_status(response, 201)
+        return response.json()
+
+    def stop_spider_job(self, pid, sid, jid):
+        endpoint = "projects/{}/spiders/{}/jobs/{}/stop".format(pid, sid, jid)
+        response = self.put(endpoint)
         self.check_status(response, 200)
         return response.json()

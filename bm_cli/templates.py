@@ -10,6 +10,8 @@ host: $bm_host
 
 # Init project templates
 
+BITMAKER_DIR = ".bitmaker"
+
 DOCKER_APP_DIR = "/usr/src/app"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
