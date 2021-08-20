@@ -22,6 +22,8 @@ requests==2.25.1
     #   docker
 six==1.15.0
     # via websocket-client
+tabulate==0.8.9
+    # via -r requirements/base.in
 urllib3==1.26.4
     # via requests
 websocket-client==0.58.0
