@@ -121,6 +121,7 @@ class TestBMClient(unittest.TestCase):
         self.assertIn("jid", job)
         self.assertIn("name", job)
         self.assertIn("args", job)
+        self.assertIn("env_vars", job)
         self.assertIn("job_type", job)
         self.assertIn("schedule", job)
         self.assertEqual(job["job_status"], "WAITING")

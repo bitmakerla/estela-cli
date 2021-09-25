@@ -7,13 +7,13 @@ from bm_cli.utils import get_bm_settings
 SHORT_HELP = "Create a new job"
 
 
-def validate_arg(ctx, param, value):
+def validate_key_value_format(ctx, param, value):
     try:
-        args = []
+        key_val_pairs = []
         for pair in value:
             key, val = pair.split("=", 1)
-            args.append({"name": key, "value": val})
-        return args
+            key_val_pairs.append({"name": key, "value": val})
+        return key_val_pairs
     except:
         raise click.BadParameter("format must be 'NAME=VALUE'")
 
@@ -26,10 +26,18 @@ def validate_arg(ctx, param, value):
     "-a",
     multiple=True,
     type=click.UNPROCESSED,
-    callback=validate_arg,
+    callback=validate_key_value_format,
     help="Set spider job argument NAME=VALUE (may be repeated)",
 )
-def bm_command(sid, pid, arg):
+@click.option(
+    "--env",
+    "-e",
+    multiple=True,
+    type=click.UNPROCESSED,
+    callback=validate_key_value_format,
+    help="Set spider job environment variable NAME=VALUE (may be repeated)",
+)
+def bm_command(sid, pid, arg, env):
     """Create a new job
 
     \b
@@ -47,7 +55,7 @@ def bm_command(sid, pid, arg):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        response = bm_client.create_spider_job(pid, sid, "SINGLE_JOB", arg)
+        response = bm_client.create_spider_job(pid, sid, "SINGLE_JOB", arg, env)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:
         raise click.ClickException("Cannot create the job for given SID and PID.")
