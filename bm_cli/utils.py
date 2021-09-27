@@ -7,6 +7,7 @@ from bm_cli.templates import (
     BITMAKER_YAML_NAME,
     BITMAKER_DIR,
     DOCKERFILE_NAME,
+    LOCALHOST,
 )
 
 
@@ -79,3 +80,7 @@ def format_key_value_pairs(key_value_pairs):
 
     result += "{}: {}".format(key_value_pairs[-1]["name"], key_value_pairs[-1]["value"])
     return result
+
+def set_localhost(container_image):
+    host,image = container_image.split("/")
+    return "{}/{}".format(LOCALHOST,image)

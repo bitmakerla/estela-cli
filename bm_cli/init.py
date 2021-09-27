@@ -3,7 +3,7 @@ import click
 
 from string import Template
 from bm_cli.login import login
-from bm_cli.utils import get_project_path, get_bm_yaml_path, get_bm_dockerfile_path
+from bm_cli.utils import get_project_path, get_bm_yaml_path, get_bm_dockerfile_path, set_localhost
 from bm_cli.templates import (
     DOCKERFILE,
     DOCKERFILE_NAME,
@@ -17,7 +17,7 @@ from bm_cli.templates import (
 SHORT_HELP = "Initialize bitmaker project for existing scrapy project"
 
 
-def gen_bm_yaml(bm_client, pid=None):
+def gen_bm_yaml(bm_client, pid=None, local=False):
     bm_yaml_path = get_bm_yaml_path()
 
     if os.path.exists(bm_yaml_path):
@@ -40,6 +40,10 @@ def gen_bm_yaml(bm_client, pid=None):
         "project_pid": pid,
         "container_image": project["container_image"],
     }
+
+    if local:
+        values["container_image"] = set_localhost(values["container_image"])
+
     result = template.substitute(values)
 
     with open(bm_yaml_path, "w") as bm_yaml:
@@ -84,15 +88,22 @@ def gen_dockerfile(requirements_path):
     help="Relative path to requirements inside your project",
     show_default=True,
 )
-def bm_command(pid, requirements):
+@click.option(
+    "-l",
+    "--local",
+    help="Flag to indicate if the registry host is local",
+    is_flag=True,
+)
+def bm_command(pid, requirements, local):
     """Initialize bitmaker project
 
     PID is the project's pid
+    LOCAL is a flag that indicate if the registry host is local
     """
 
     if not os.path.exists(BITMAKER_DIR):
         os.makedirs(BITMAKER_DIR)
 
     bm_client = login()
-    gen_bm_yaml(bm_client, pid)
+    gen_bm_yaml(bm_client, pid, local)
     gen_dockerfile(requirements)
