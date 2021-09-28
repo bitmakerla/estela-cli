@@ -9,11 +9,11 @@ SHORT_HELP = "Create a new job"
 
 def validate_key_value_format(ctx, param, value):
     try:
-        key_val_pairs = []
+        key_value_pairs = []
         for pair in value:
-            key, val = pair.split("=", 1)
-            key_val_pairs.append({"name": key, "value": val})
-        return key_val_pairs
+            key, value = pair.split("=", 1)
+            key_value_pairs.append({"name": key, "value": value})
+        return key_value_pairs
     except:
         raise click.BadParameter("format must be 'NAME=VALUE'")
 
