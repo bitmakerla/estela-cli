@@ -69,13 +69,13 @@ def format_time(date):
     return date.strftime("%Y-%m-%d %H:%M")
 
 
-def format_args(args):
-    if not args:
+def format_key_value_pairs(key_value_pairs):
+    if not key_value_pairs:
         return ""
 
     result = ""
-    for arg in args[:-1]:
-        result += "{}: {}\n".format(arg["name"], arg["value"])
+    for key_value in key_value_pairs[:-1]:
+        result += "{}: {}\n".format(key_value["name"], key_value["value"])
 
-    result += "{}: {}".format(args[-1]["name"], args[-1]["value"])
+    result += "{}: {}".format(key_value_pairs[-1]["name"], key_value_pairs[-1]["value"])
     return result

@@ -143,9 +143,16 @@ class BmClient(BmSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def create_spider_job(self, pid, sid, job_type="", args=[], schedule=""):
+    def create_spider_job(
+        self, pid, sid, job_type="", args=[], env_vars=[], schedule=""
+    ):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
-        data = {"job_type": job_type, "args": args, "schedule": schedule}
+        data = {
+            "job_type": job_type,
+            "args": args,
+            "env_vars": env_vars,
+            "schedule": schedule,
+        }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
         return response.json()

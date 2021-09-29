@@ -2,7 +2,7 @@ import click
 
 from tabulate import tabulate
 from bm_cli.login import login
-from bm_cli.utils import get_bm_settings, format_time, format_args
+from bm_cli.utils import get_bm_settings, format_time, format_key_value_pairs
 
 SHORT_HELP = "List the spider's jobs"
 
@@ -41,12 +41,13 @@ def bm_command(sid, pid):
         [
             job["jid"],
             job["job_status"].capitalize(),
-            format_args(job["args"]),
+            format_key_value_pairs(job["args"]),
+            format_key_value_pairs(job["env_vars"]),
             format_time(job["created"]),
         ]
         for job in jobs
         if job["job_type"] == "SINGLE_JOB"
     ]
 
-    headers = ["JID", "STATUS", "ARGS", "CREATED"]
+    headers = ["JID", "STATUS", "ARGS", "ENV VARS", "CREATED"]
     click.echo(tabulate(jobs, headers, numalign="left", tablefmt="plain"))
