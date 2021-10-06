@@ -36,8 +36,10 @@ def upload_image(bm_client):
 
     repository, image_name = bm_settings["project"]["bm_image"].rsplit(":",1)
     project = bm_client.get_project(bm_settings["project"]["pid"])
-    username, password = base64.b64decode(project["token"]).decode().split(":")
-    auth_config = {"username": username, "password": password}
+    auth_config = None
+    if project["token"]:
+        username, password = base64.b64decode(project["token"]).decode().split(":")
+        auth_config = {"username": username, "password": password}
 
     try:
         docker_client = docker.from_env()
