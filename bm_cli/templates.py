@@ -42,6 +42,7 @@ project:
   bm_image: $container_image
 """
 
+LOCALHOST = "localhost:5000"
 
 # General templates
 
