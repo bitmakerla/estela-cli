@@ -12,6 +12,8 @@ host: $bm_host
 
 BITMAKER_DIR = ".bitmaker"
 
+DATA_DIR = "project_data"
+
 DOCKER_APP_DIR = "/usr/src/app"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"

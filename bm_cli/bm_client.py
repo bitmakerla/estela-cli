@@ -137,8 +137,19 @@ class BmClient(BmSimpleClient):
         response = self.get(endpoint, paginated=True)
         return response
 
+    def get_spider_jobs_with_tag(self, pid, sid, tag):
+        endpoint = "projects/{}/spiders/{}/jobs?tag={}".format(pid, sid, tag)
+        response = self.get(endpoint, paginated=True)
+        return response
+
     def get_spider_job(self, pid, sid, jid):
         endpoint = "projects/{}/spiders/{}/jobs/{}".format(pid, sid, jid)
+        response = self.get(endpoint)
+        self.check_status(response, 200)
+        return response.json()
+    
+    def get_spider_job_data(self, pid, sid, jid):
+        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode=all".format(pid, sid, jid)
         response = self.get(endpoint)
         self.check_status(response, 200)
         return response.json()

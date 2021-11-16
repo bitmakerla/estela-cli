@@ -23,6 +23,7 @@ commands = [
     "logout",
     "init",
     "context",
+    "data",
 ]
 
 for command in commands:

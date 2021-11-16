@@ -1,11 +1,13 @@
 import os
 import yaml
+import json
 
 from datetime import datetime
 from bm_cli.templates import (
     BITMAKER_AUTH_NAME,
     BITMAKER_YAML_NAME,
     BITMAKER_DIR,
+    DATA_DIR,
     DOCKERFILE_NAME,
     LOCALHOST,
 )
@@ -81,6 +83,25 @@ def format_key_value_pairs(key_value_pairs):
     result += "{}: {}".format(key_value_pairs[-1]["name"], key_value_pairs[-1]["value"])
     return result
 
+def format_tags(tags):
+    if not tags:
+        return ""
+    result = ""
+    for tag in tags[:-1]:
+        result += "{}\n".format(tag["name"])
+    result += "{}".format(tags[-1]["name"])
+    return result
+
 def set_localhost(container_image):
     host,image = container_image.split("/")
     return "{}/{}".format(LOCALHOST,image)
+
+def save_data(filename, data):
+    project_path = get_project_path()
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+    filename = os.path.join(project_path, DATA_DIR, filename)
+    with open(filename, 'w', encoding='utf-8') as F:
+        json.dump(data, F, ensure_ascii=False, indent=4)
+        
+
