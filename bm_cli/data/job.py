@@ -6,11 +6,16 @@ from bm_cli.templates import OK_EMOJI, BAD_EMOJI
 
 SHORT_HELP = "Get data from a job"
 
+
 @click.command(short_help=SHORT_HELP)
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
-def bm_command(jid, sid, pid, ):
+def bm_command(
+    jid,
+    sid,
+    pid,
+):
     """Get data from a job
 
     \b
@@ -33,5 +38,5 @@ def bm_command(jid, sid, pid, ):
         click.echo("{} Data retrieve succesfully.".format(OK_EMOJI))
     except Exception as ex:
         raise click.ClickException("{} Cannot get data".format(BAD_EMOJI))
-    save_data("{}-{}.json".format(jid,pid), response)
+    save_data("{}-{}.json".format(jid, pid), response)
     click.echo("{} Data saved succesfully.".format(OK_EMOJI))

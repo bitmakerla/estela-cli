@@ -4,7 +4,7 @@
 
 Bitmaker Cloud CLI is the command line client to interact with Bitmaker Cloud API. Allows the user to perform the following actions:
 - Link a Scrapy project with a project in Bitmaker Cloud.
-- Create projects and jobs in Bitmaker Cloud.
+- Create projects, jobs, and cronjobs in Bitmaker Cloud.
 - Get the data of a job.
 
 ```bash
@@ -27,6 +27,7 @@ Commands:
   login    Save your credentials
   logout   Remove your credentials
   stop     Stop an active job or cronjob
+  update   Update a resource
 
 Args:
   project  All projects or a project if it is followed by the ID of that project

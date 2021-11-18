@@ -3,7 +3,12 @@ import click
 
 from string import Template
 from bm_cli.login import login
-from bm_cli.utils import get_project_path, get_bm_yaml_path, get_bm_dockerfile_path, set_localhost
+from bm_cli.utils import (
+    get_project_path,
+    get_bm_yaml_path,
+    get_bm_dockerfile_path,
+    set_localhost,
+)
 from bm_cli.templates import (
     DOCKERFILE,
     DOCKERFILE_NAME,

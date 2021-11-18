@@ -10,6 +10,7 @@ def bm_command():
 commands = [
     "project",
     "job",
+    "cronjob",
 ]
 
 for command in commands:

@@ -2,18 +2,15 @@ import click
 import importlib
 
 
-@click.group(short_help="Display the available resources")
+@click.group(short_help="Update a resource")
 def bm_command():
     pass
 
 
 commands = [
-    "project",
-    "spider",
-    "job",
     "cronjob",
 ]
 
 for command in commands:
-    module = importlib.import_module("bm_cli.list.{}".format(command))
+    module = importlib.import_module("bm_cli.update.{}".format(command))
     bm_command.add_command(module.bm_command, command)

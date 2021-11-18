@@ -30,7 +30,7 @@ def bm_command(jid, sid, pid):
             )
     try:
         response = bm_client.stop_spider_job(pid, sid, jid)
-        click.echo("job/{} stopped.".format(response["name"]))
+        click.echo(f"job/spider-job-{jid}-{pid} stopped.")
     except Exception as ex:
         raise click.ClickException(
             "The job is not active, does not exist, or you do not have permission to perform this action."

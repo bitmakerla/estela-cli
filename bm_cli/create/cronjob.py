@@ -4,10 +4,11 @@ from bm_cli.login import login
 from bm_cli.utils import get_bm_settings, validate_key_value_format, set_tag_format
 
 
-SHORT_HELP = "Create a new job"
+SHORT_HELP = "Create a new cronjob"
 
 
 @click.command(short_help=SHORT_HELP)
+@click.argument("schedule", required=True, type=click.STRING)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
 @click.option(
@@ -34,10 +35,11 @@ SHORT_HELP = "Create a new job"
     callback=set_tag_format,
     help="Set spider cronjob tag (may have multiple)",
 )
-def bm_command(sid, pid, arg, env, tag):
-    """Create a new job
+def bm_command(sid, pid, schedule, arg, env, tag):
+    """Create a new cronjob
 
     \b
+    SCHEDULE is the crontab schedule expression for the cronjob
     SID is the spider's sid
     PID is the project's pid (active project by default)
     """
@@ -52,7 +54,9 @@ def bm_command(sid, pid, arg, env, tag):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        response = bm_client.create_spider_job(pid, sid, arg, env, tag)
-        click.echo("job/{} created.".format(response["name"]))
+        response = bm_client.create_spider_cronjob(pid, sid, schedule, arg, env, tag)
+        click.echo("cronjob/{} created.".format(response["name"]))
     except Exception as ex:
-        raise click.ClickException("Cannot create the job for given SID and PID.")
+        raise click.ClickException(
+            "Cannot create the cronjob for given SID and PID. Is the crontab valid?"
+        )

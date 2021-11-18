@@ -1,6 +1,7 @@
 import os
 import yaml
 import json
+import click
 
 from datetime import datetime
 from bm_cli.templates import (
@@ -83,6 +84,7 @@ def format_key_value_pairs(key_value_pairs):
     result += "{}: {}".format(key_value_pairs[-1]["name"], key_value_pairs[-1]["value"])
     return result
 
+
 def format_tags(tags):
     if not tags:
         return ""
@@ -92,16 +94,34 @@ def format_tags(tags):
     result += "{}".format(tags[-1]["name"])
     return result
 
+
 def set_localhost(container_image):
-    host,image = container_image.split("/")
-    return "{}/{}".format(LOCALHOST,image)
+    host, image = container_image.split("/")
+    return "{}/{}".format(LOCALHOST, image)
+
 
 def save_data(filename, data):
     project_path = get_project_path()
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
     filename = os.path.join(project_path, DATA_DIR, filename)
-    with open(filename, 'w', encoding='utf-8') as F:
+    with open(filename, "w", encoding="utf-8") as F:
         json.dump(data, F, ensure_ascii=False, indent=4)
-        
 
+
+def validate_key_value_format(ctx, param, value):
+    try:
+        key_value_pairs = []
+        for pair in value:
+            key, value = pair.split("=", 1)
+            key_value_pairs.append({"name": key, "value": value})
+        return key_value_pairs
+    except:
+        raise click.BadParameter("format must be 'NAME=VALUE'")
+
+
+def set_tag_format(ctx, param, value):
+    tags = []
+    for tag_name in value:
+        tags.append({"name": tag_name})
+    return tags

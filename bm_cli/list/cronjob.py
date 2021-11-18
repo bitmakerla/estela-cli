@@ -9,20 +9,20 @@ from bm_cli.utils import (
     format_tags,
 )
 
-SHORT_HELP = "List the spider's jobs"
+SHORT_HELP = "List the spider's cronjobs"
 
 
 @click.command(short_help=SHORT_HELP)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
 @click.option(
-    "-t",
     "--tag",
+    "-t",
     type=click.UNPROCESSED,
-    help="Filter jobs by tag",
+    help="Filter cronjobs by tag",
 )
 def bm_command(sid, pid, tag):
-    """List jobs of a given spider
+    """List cronjobs of a given spider
 
     \b
     SID is the spider's sid
@@ -48,23 +48,23 @@ def bm_command(sid, pid, tag):
             "The spider does not exist, or you do not have permission to perform this action."
         )
 
-    jobs = []
+    cronjobs = []
     if tag:
-        jobs = bm_client.get_spider_jobs_with_tag(pid, sid, tag)
+        cronjobs = bm_client.get_spider_cronjobs_with_tag(pid, sid, tag)
     else:
-        jobs = bm_client.get_spider_jobs(pid, sid)
+        cronjobs = bm_client.get_spider_cronjobs(pid, sid)
 
-    jobs = [
+    cronjobs = [
         [
-            job["jid"],
-            job["job_status"].capitalize(),
-            format_tags(job["tags"]),
-            format_key_value_pairs(job["args"]),
-            format_key_value_pairs(job["env_vars"]),
-            format_time(job["created"]),
+            cronjob["cjid"],
+            cronjob["status"],
+            cronjob["schedule"],
+            format_tags(cronjob["ctags"]),
+            format_key_value_pairs(cronjob["cargs"]),
+            format_key_value_pairs(cronjob["cenv_vars"]),
         ]
-        for job in jobs
+        for cronjob in cronjobs
     ]
 
-    headers = ["JID", "STATUS", "TAGS", "ARGS", "ENV VARS", "CREATED"]
-    click.echo(tabulate(jobs, headers, numalign="left", tablefmt="plain"))
+    headers = ["CJID", "STATUS", "SCHEDULE", "TAGS", "ARGS", "ENV VARS"]
+    click.echo(tabulate(cronjobs, headers, numalign="left", tablefmt="plain"))

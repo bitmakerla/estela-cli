@@ -34,7 +34,7 @@ def build_image():
 def upload_image(bm_client):
     bm_settings = get_bm_settings()
 
-    repository, image_name = bm_settings["project"]["bm_image"].rsplit(":",1)
+    repository, image_name = bm_settings["project"]["bm_image"].rsplit(":", 1)
     project = bm_client.get_project(bm_settings["project"]["pid"])
     auth_config = None
     if project["token"]:
