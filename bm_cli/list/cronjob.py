@@ -27,7 +27,7 @@ def bm_command(sid, pid, tag):
     \b
     SID is the spider's sid
     PID is the project's pid (active project by default)
-    TAG is tags to filter jobs
+    TAG is the tag used to filter cronjobs
     """
 
     bm_client = login()
