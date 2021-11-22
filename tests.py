@@ -114,16 +114,13 @@ class TestBMClient(unittest.TestCase):
         project = self.client.create_project(name="test_project")
         self.client.set_related_spiders(pid=project["pid"], spiders=["spider1"])
         spider = self.client.get_spiders(pid=project["pid"])[0]
-        job = self.client.create_spider_job(
-            pid=project["pid"], sid=spider["sid"], job_type="SINGLE_JOB"
-        )
+        job = self.client.create_spider_job(pid=project["pid"], sid=spider["sid"])
 
         self.assertIn("jid", job)
         self.assertIn("name", job)
         self.assertIn("args", job)
         self.assertIn("env_vars", job)
-        self.assertIn("job_type", job)
-        self.assertIn("schedule", job)
+        self.assertIn("tags", job)
         self.assertEqual(job["job_status"], "WAITING")
 
         response = self.client.stop_spider_job(
@@ -137,12 +134,8 @@ class TestBMClient(unittest.TestCase):
         project = self.client.create_project(name="test_project")
         self.client.set_related_spiders(pid=project["pid"], spiders=["spider"])
         spider = self.client.get_spiders(pid=project["pid"])[0]
-        job1 = self.client.create_spider_job(
-            pid=project["pid"], sid=spider["sid"], job_type="SINGLE_JOB"
-        )
-        job2 = self.client.create_spider_job(
-            pid=project["pid"], sid=spider["sid"], job_type="CRON_JOB"
-        )
+        job1 = self.client.create_spider_job(pid=project["pid"], sid=spider["sid"])
+        job2 = self.client.create_spider_job(pid=project["pid"], sid=spider["sid"])
 
         jobs = self.client.get_spider_jobs(pid=project["pid"], sid=spider["sid"])
 
@@ -159,8 +152,6 @@ class TestBMClient(unittest.TestCase):
 
         self.assertIn("jid", job1)
         self.assertIn("jid", job2)
-        self.assertEqual(job1["job_type"], "SINGLE_JOB")
-        self.assertEqual(job2["job_type"], "CRON_JOB")
 
         self.client.stop_spider_job(
             pid=project["pid"], sid=spider["sid"], jid=job1["jid"]
@@ -168,6 +159,33 @@ class TestBMClient(unittest.TestCase):
         self.client.stop_spider_job(
             pid=project["pid"], sid=spider["sid"], jid=job2["jid"]
         )
+        self.client.delete_project(project["pid"])
+
+    def test_create_update_spider_cronjob(self):
+        project = self.client.create_project(name="test_project")
+        self.client.set_related_spiders(pid=project["pid"], spiders=["spider1"])
+        spider = self.client.get_spiders(pid=project["pid"])[0]
+        cronjob = self.client.create_spider_cronjob(
+            pid=project["pid"], sid=spider["sid"], schedule="0 4 * * *"
+        )
+
+        self.assertIn("cjid", cronjob)
+        self.assertIn("name", cronjob)
+        self.assertIn("cargs", cronjob)
+        self.assertIn("cenv_vars", cronjob)
+        self.assertIn("ctags", cronjob)
+        self.assertIn("schedule", cronjob)
+
+        response = self.client.update_spider_cronjob(
+            pid=project["pid"],
+            sid=spider["sid"],
+            cjid=cronjob["cjid"],
+            status="DISABLED",
+            schedule="0 8 * * *",
+        )
+        self.assertEqual(response["status"], "DISABLED")
+        self.assertEqual(response["schedule"], "0 8 * * *")
+
         self.client.delete_project(project["pid"])
 
 

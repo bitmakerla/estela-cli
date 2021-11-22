@@ -132,6 +132,22 @@ class BmClient(BmSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
+    def get_spider_cronjobs(self, pid, sid):
+        endpoint = "projects/{}/spiders/{}/cronjobs".format(pid, sid)
+        response = self.get(endpoint, paginated=True)
+        return response
+
+    def get_spider_cronjobs_with_tag(self, pid, sid, tag):
+        endpoint = "projects/{}/spiders/{}/cronjobs?tag={}".format(pid, sid, tag)
+        response = self.get(endpoint, paginated=True)
+        return response
+
+    def get_spider_cronjob(self, pid, sid, cjid):
+        endpoint = "projects/{}/spiders/{}/cronjobs/{}".format(pid, sid, cjid)
+        response = self.get(endpoint)
+        self.check_status(response, 200)
+        return response.json()
+
     def get_spider_jobs(self, pid, sid):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
         response = self.get(endpoint, paginated=True)
@@ -147,22 +163,19 @@ class BmClient(BmSimpleClient):
         response = self.get(endpoint)
         self.check_status(response, 200)
         return response.json()
-    
+
     def get_spider_job_data(self, pid, sid, jid):
         endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode=all".format(pid, sid, jid)
         response = self.get(endpoint)
         self.check_status(response, 200)
         return response.json()
 
-    def create_spider_job(
-        self, pid, sid, job_type="", args=[], env_vars=[], schedule=""
-    ):
+    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[]):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
         data = {
-            "job_type": job_type,
             "args": args,
             "env_vars": env_vars,
-            "schedule": schedule,
+            "tags": tags,
         }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
@@ -171,5 +184,29 @@ class BmClient(BmSimpleClient):
     def stop_spider_job(self, pid, sid, jid):
         endpoint = "projects/{}/spiders/{}/jobs/{}/stop".format(pid, sid, jid)
         response = self.put(endpoint)
+        self.check_status(response, 200)
+        return response.json()
+
+    def create_spider_cronjob(
+        self, pid, sid, schedule="", args=[], env_vars=[], tags=[]
+    ):
+        endpoint = "projects/{}/spiders/{}/cronjobs".format(pid, sid)
+        data = {
+            "schedule": schedule,
+            "cargs": args,
+            "cenv_vars": env_vars,
+            "ctags": tags,
+        }
+        response = self.post(endpoint, data=data)
+        self.check_status(response, 201)
+        return response.json()
+
+    def update_spider_cronjob(self, pid, sid, cjid, status, schedule):
+        endpoint = "projects/{}/spiders/{}/cronjobs/{}".format(pid, sid, cjid)
+        data = {
+            "status": status,
+            "schedule": schedule,
+        }
+        response = self.put(endpoint, data=data)
         self.check_status(response, 200)
         return response.json()
