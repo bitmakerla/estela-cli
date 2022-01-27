@@ -2,6 +2,8 @@ import os
 import yaml
 import json
 import click
+import io
+import csv
 
 from datetime import datetime
 from bm_cli.templates import (
@@ -106,7 +108,10 @@ def save_data(filename, data):
         os.makedirs(DATA_DIR)
     filename = os.path.join(project_path, DATA_DIR, filename)
     with open(filename, "w", encoding="utf-8") as F:
-        json.dump(data, F, ensure_ascii=False, indent=4)
+        if "json" in filename:
+            json.dump(data, F, ensure_ascii=False, indent=4)
+        elif "csv" in filename:
+            F.write(data)
 
 
 def validate_key_value_format(ctx, param, value):
