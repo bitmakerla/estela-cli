@@ -164,11 +164,13 @@ class BmClient(BmSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def get_spider_job_data(self, pid, sid, jid):
-        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode=all".format(pid, sid, jid)
+    def get_spider_job_data(self, pid, sid, jid, format):
+        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode={}".format(
+            pid, sid, jid, format
+        )
         response = self.get(endpoint)
         self.check_status(response, 200)
-        return response.json()
+        return response.text
 
     def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[]):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
