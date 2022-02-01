@@ -181,7 +181,7 @@ class BmClient(BmSimpleClient):
         }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
-        return response
+        return response.json()
 
     def stop_spider_job(self, pid, sid, jid):
         endpoint = "projects/{}/spiders/{}/jobs/{}/stop".format(pid, sid, jid)

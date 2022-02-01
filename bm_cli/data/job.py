@@ -1,3 +1,4 @@
+from email.policy import default
 import click
 from click import ClickException
 
@@ -13,7 +14,12 @@ ALLOWED_FORMATS = ["json", "csv"]
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
-@click.option("-f", "--format", required=False)
+@click.option(
+    "-f",
+    "--format",
+    type=click.Choice(ALLOWED_FORMATS, case_sensitive=False),
+    default="json",
+)
 def bm_command(
     jid,
     sid,
@@ -26,17 +32,11 @@ def bm_command(
     SID is the spider's sid
     PID is the project's pid (active project by default)
     JID is the job's id
+    FORMAT is the format to retrieve data
     """
 
     bm_client = login()
-    if format is None:
-        format = "json"
-    if format not in ALLOWED_FORMATS:
-        raise ClickException(
-            "Format not supported. Formats that are supported: {}".format(
-                *ALLOWED_FORMATS
-            )
-        )
+    print(format)
     if pid is None:
         try:
             bm_settings = get_bm_settings()
