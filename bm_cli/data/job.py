@@ -36,7 +36,6 @@ def bm_command(
     """
 
     bm_client = login()
-    print(format)
     if pid is None:
         try:
             bm_settings = get_bm_settings()
