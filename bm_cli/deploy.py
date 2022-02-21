@@ -12,7 +12,7 @@ SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
 
 def zip_project(pid, project_path):
     relroot = os.path.abspath(os.path.join(project_path, os.pardir))
-    project_data_path = os.path.join(project_path,DATA_DIR)
+    project_data_path = os.path.join(project_path, DATA_DIR)
     with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(project_path):
             # ignoring dir with data from jobs
@@ -24,6 +24,7 @@ def zip_project(pid, project_path):
                 filename = os.path.join(root, file)
                 arcname = os.path.join(os.path.relpath(root, relroot), file)
                 zip.write(filename, arcname)
+
 
 @click.command(short_help=SHORT_HELP)
 def bm_command():
@@ -44,8 +45,10 @@ def bm_command():
     try:
         response = bm_client.upload_project(pid, open("{}.zip".format(pid), "rb"))
     except:
-        click.ClickException(
-            "A problem occurred while uploading the project."
+        click.ClickException("A problem occurred while uploading the project.")
+
+    click.echo(
+        "{} Project uploaded successfully. Deploy {} underway.".format(
+            OK_EMOJI, response["did"]
         )
-    
-    click.echo("{} Project uploaded successfully. Deploy {} underway.".format(OK_EMOJI, response["did"]))
+    )

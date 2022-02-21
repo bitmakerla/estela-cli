@@ -39,7 +39,11 @@ class BmSimpleClient:
             data = {}
         headers = self.get_default_headers()
         return requests.post(
-            self.url_for(endpoint), json=data, headers=headers, params=params, files=files
+            self.url_for(endpoint),
+            json=data,
+            headers=headers,
+            params=params,
+            files=files,
         )
 
     def get(self, endpoint, params=None, paginated=False):
