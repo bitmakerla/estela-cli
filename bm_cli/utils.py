@@ -2,8 +2,6 @@ import os
 import yaml
 import json
 import click
-import io
-import csv
 
 from datetime import datetime
 from bm_cli.templates import (
@@ -12,7 +10,6 @@ from bm_cli.templates import (
     BITMAKER_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
-    LOCALHOST,
 )
 
 

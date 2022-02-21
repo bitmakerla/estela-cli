@@ -7,7 +7,6 @@ from bm_cli.utils import (
     get_project_path,
     get_bm_yaml_path,
     get_bm_dockerfile_path,
-    set_localhost,
 )
 from bm_cli.templates import (
     DOCKERFILE,
@@ -22,7 +21,7 @@ from bm_cli.templates import (
 SHORT_HELP = "Initialize bitmaker project for existing scrapy project"
 
 
-def gen_bm_yaml(bm_client, pid=None, local=False):
+def gen_bm_yaml(bm_client, pid=None):
     bm_yaml_path = get_bm_yaml_path()
 
     if os.path.exists(bm_yaml_path):
@@ -43,11 +42,7 @@ def gen_bm_yaml(bm_client, pid=None, local=False):
     template = Template(BITMAKER_YAML)
     values = {
         "project_pid": pid,
-        "container_image": project["container_image"],
     }
-
-    if local:
-        values["container_image"] = set_localhost(values["container_image"])
 
     result = template.substitute(values)
 
@@ -93,13 +88,7 @@ def gen_dockerfile(requirements_path):
     help="Relative path to requirements inside your project",
     show_default=True,
 )
-@click.option(
-    "-l",
-    "--local",
-    help="Flag to indicate if the registry host is local",
-    is_flag=True,
-)
-def bm_command(pid, requirements, local):
+def bm_command(pid, requirements):
     """Initialize bitmaker project
 
     PID is the project's pid
@@ -110,5 +99,5 @@ def bm_command(pid, requirements, local):
         os.makedirs(BITMAKER_DIR)
 
     bm_client = login()
-    gen_bm_yaml(bm_client, pid, local)
+    gen_bm_yaml(bm_client, pid)
     gen_dockerfile(requirements)
