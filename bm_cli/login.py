@@ -1,5 +1,4 @@
 import os
-import yaml
 import click
 
 from getpass import getpass

@@ -2,8 +2,6 @@ import os
 import yaml
 import json
 import click
-import io
-import csv
 
 from datetime import datetime
 from bm_cli.templates import (
@@ -12,7 +10,6 @@ from bm_cli.templates import (
     BITMAKER_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
-    LOCALHOST,
 )
 
 
@@ -130,3 +127,9 @@ def set_tag_format(ctx, param, value):
     for tag_name in value:
         tags.append({"name": tag_name})
     return tags
+
+
+def _in(path, ignore_files):
+    for file in ignore_files:
+        if path.startswith(file):
+            return True

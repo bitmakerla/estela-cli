@@ -41,10 +41,9 @@ BITMAKER_YAML_NAME = "bitmaker.yaml"
 BITMAKER_YAML = """\
 project:
   pid: $project_pid
-  bm_image: $container_image
+deploy:
+  ignore: [$project_data_path]
 """
-
-LOCALHOST = "localhost:5000"
 
 # General templates
 

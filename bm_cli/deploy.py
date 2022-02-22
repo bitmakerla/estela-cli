@@ -1,95 +1,58 @@
 import os
-import docker
-import base64
 import click
-import json
 
-from bm_cli.utils import get_project_path, get_bm_settings, get_bm_dockerfile_path
+from zipfile import ZipFile, ZIP_DEFLATED
+from bm_cli.utils import get_project_path, get_bm_settings, _in
 from bm_cli.login import login
-from bm_cli.templates import CLOCK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME
+from bm_cli.templates import OK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME, DATA_DIR
 
 
 SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
 
 
-def build_image():
-    project_path = get_project_path()
+def zip_project(pid, project_path):
+    relroot = os.path.abspath(os.path.join(project_path, os.pardir))
     bm_settings = get_bm_settings()
-    try:
-        docker_client = docker.from_env()
-        click.echo("{} Building image ...".format(CLOCK_EMOJI))
-        docker_client.images.build(
-            nocache=True,
-            path=project_path,
-            dockerfile=get_bm_dockerfile_path(),
-            tag=bm_settings["project"]["bm_image"],
-        )
-        docker_client.containers.prune()
-    except Exception as ex:
-        raise click.ClickException(str(ex))
-
-    click.echo("Image built successfully.")
-
-
-def upload_image(bm_client):
-    bm_settings = get_bm_settings()
-
-    repository, image_name = bm_settings["project"]["bm_image"].rsplit(":", 1)
-    project = bm_client.get_project(bm_settings["project"]["pid"])
-    auth_config = None
-    if project["token"]:
-        username, password = base64.b64decode(project["token"]).decode().split(":")
-        auth_config = {"username": username, "password": password}
-
-    try:
-        docker_client = docker.from_env()
-        click.echo("{} Uploading image ...".format(CLOCK_EMOJI))
-        docker_client.images.push(
-            repository=repository, tag=image_name, auth_config=auth_config
-        )
-    except Exception as ex:
-        raise click.ClickException(str(ex))
-
-    click.echo("Image uploaded successfully.")
-
-
-def update_spider_list(bm_client):
-    bm_settings = get_bm_settings()
-    project = bm_client.get_project(bm_settings["project"]["pid"])
-    click.echo("{} Updating spider list ...".format(CLOCK_EMOJI))
-
-    try:
-        docker_client = docker.from_env()
-        output = docker_client.containers.run(
-            bm_settings["project"]["bm_image"], "bm-describe-project", auto_remove=True
-        )
-        spiders = json.loads(output)["spiders"]
-        bm_client.set_related_spiders(project["pid"], spiders)
-    except Exception as ex:
-        raise click.ClickException(str(ex))
-
-    click.echo("Spider list updated successfully.")
+    archives_to_ignore = bm_settings["deploy"]["ignore"]
+    with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
+        for root, dirs, files in os.walk(project_path):
+            # ignoring dir with data from jobs
+            rel_root = root.replace("{}/".format(project_path), "")
+            if _in(rel_root, archives_to_ignore):
+                continue
+            # add directory (needed for empty dirs)
+            zip.write(root, os.path.relpath(root, relroot))
+            for file in files:
+                filename = os.path.join(root, file)
+                arcname = os.path.join(os.path.relpath(root, relroot), file)
+                zip.write(filename, arcname)
 
 
 @click.command(short_help=SHORT_HELP)
 def bm_command():
     bm_client = login()
     bm_settings = get_bm_settings()
+    project_path = get_project_path()
+    pid = bm_settings["project"]["pid"]
 
     try:
-        docker_client = docker.from_env()
-    except:
-        raise click.ClickException(
-            "Cannot connect to the Docker daemon. Is the docker daemon running?"
-        )
-
-    try:
-        bm_client.get_project(bm_settings["project"]["pid"])
+        bm_client.get_project(pid)
     except:
         raise click.ClickException(
             "Invalid project at {}/{}.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
         )
 
-    build_image()
-    upload_image(bm_client)
-    update_spider_list(bm_client)
+    zip_project(pid, project_path)
+
+    try:
+        response = bm_client.upload_project(pid, open("{}.zip".format(pid), "rb"))
+    except:
+        click.ClickException("A problem occurred while uploading the project.")
+
+    click.echo(
+        "{} Project uploaded successfully. Deploy {} underway.".format(
+            OK_EMOJI, response["did"]
+        )
+    )
+
+    os.remove("{}.zip".format(pid))

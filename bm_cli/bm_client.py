@@ -30,14 +30,20 @@ class BmSimpleClient:
             headers["Authorization"] = "Token {}".format(self.token)
         return headers
 
-    def post(self, endpoint, data=None, params=None):
+    def post(self, endpoint, data=None, params=None, files=None):
+        if files is None:
+            files = {}
         if params is None:
             params = {}
         if data is None:
             data = {}
         headers = self.get_default_headers()
         return requests.post(
-            self.url_for(endpoint), json=data, headers=headers, params=params
+            self.url_for(endpoint),
+            json=data,
+            headers=headers,
+            params=params,
+            files=files,
         )
 
     def get(self, endpoint, params=None, paginated=False):
@@ -125,11 +131,11 @@ class BmClient(BmSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def set_related_spiders(self, pid, spiders):
-        endpoint = "projects/{}/set_related_spiders".format(pid)
-        data = {"spiders_names": spiders}
-        response = self.put(endpoint, data=data)
-        self.check_status(response, 200)
+    def upload_project(self, pid, project_zip):
+        endpoint = "projects/{}/deploys".format(pid)
+        files = {"project_zip": project_zip}
+        response = self.post(endpoint, files=files)
+        self.check_status(response, 201)
         return response.json()
 
     def get_spider_cronjobs(self, pid, sid):
