@@ -41,6 +41,8 @@ BITMAKER_YAML_NAME = "bitmaker.yaml"
 BITMAKER_YAML = """\
 project:
   pid: $project_pid
+deploy:
+  ignore: [$project_data_path]
 """
 
 # General templates

@@ -9,6 +9,7 @@ from bm_cli.utils import (
     get_bm_dockerfile_path,
 )
 from bm_cli.templates import (
+    DATA_DIR,
     DOCKERFILE,
     DOCKERFILE_NAME,
     BITMAKER_YAML,
@@ -42,6 +43,7 @@ def gen_bm_yaml(bm_client, pid=None):
     template = Template(BITMAKER_YAML)
     values = {
         "project_pid": pid,
+        "project_data_path": DATA_DIR,
     }
 
     result = template.substitute(values)

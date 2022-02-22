@@ -127,3 +127,9 @@ def set_tag_format(ctx, param, value):
     for tag_name in value:
         tags.append({"name": tag_name})
     return tags
+
+
+def _in(path, ignore_files):
+    for file in ignore_files:
+        if path.startswith(file):
+            return True

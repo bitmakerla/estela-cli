@@ -2,7 +2,7 @@ import os
 import click
 
 from zipfile import ZipFile, ZIP_DEFLATED
-from bm_cli.utils import get_project_path, get_bm_settings
+from bm_cli.utils import get_project_path, get_bm_settings, _in
 from bm_cli.login import login
 from bm_cli.templates import OK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME, DATA_DIR
 
@@ -12,11 +12,13 @@ SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
 
 def zip_project(pid, project_path):
     relroot = os.path.abspath(os.path.join(project_path, os.pardir))
-    project_data_path = os.path.join(project_path, DATA_DIR)
+    bm_settings = get_bm_settings()
+    archives_to_ignore = bm_settings["deploy"]["ignore"]
     with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(project_path):
             # ignoring dir with data from jobs
-            if root == project_data_path:
+            rel_root = root.replace("{}/".format(project_path), "")
+            if _in(rel_root, archives_to_ignore):
                 continue
             # add directory (needed for empty dirs)
             zip.write(root, os.path.relpath(root, relroot))
@@ -52,3 +54,5 @@ def bm_command():
             OK_EMOJI, response["did"]
         )
     )
+
+    os.remove("{}.zip".format(pid))
