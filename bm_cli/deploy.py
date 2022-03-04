@@ -1,10 +1,11 @@
 import os
 import click
 
+from string import Template
 from zipfile import ZipFile, ZIP_DEFLATED
-from bm_cli.utils import get_project_path, get_bm_settings, _in
+from bm_cli.utils import get_project_path, get_bm_settings, _in, get_bm_dockerfile_path
 from bm_cli.login import login
-from bm_cli.templates import OK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME, DATA_DIR
+from bm_cli.templates import OK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME, DOCKERFILE, DOCKERFILE_NAME
 
 
 SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
@@ -28,12 +29,37 @@ def zip_project(pid, project_path):
                 zip.write(filename, arcname)
 
 
+def update_dockerfile(requirements_path, python_version):
+    dockerfile_path = get_bm_dockerfile_path()
+
+    project_path = get_project_path()
+    requirements_local_path = os.path.join(project_path, requirements_path)
+    if not os.path.exists(requirements_local_path):
+        raise click.ClickException("The requirements file does not exist.")
+
+    template = Template(DOCKERFILE)
+    values = {
+        "python_version": python_version,
+        "requirements_path": requirements_path,
+    }
+    result = template.substitute(values)
+    with open(dockerfile_path, "r") as dock:
+        if result == dock.read():
+            click.echo("{}/{} not changes to update.".format(BITMAKER_DIR, DOCKERFILE_NAME))
+            return
+
+    with open(dockerfile_path, "w+") as dockerfile:
+        dockerfile.write(result)
+        click.echo("{}/{} updated successfully.".format(BITMAKER_DIR, DOCKERFILE_NAME))
+
+
 @click.command(short_help=SHORT_HELP)
 def bm_command():
     bm_client = login()
     bm_settings = get_bm_settings()
     project_path = get_project_path()
-    pid = bm_settings["project"]["pid"]
+    p_settings = bm_settings["project"]
+    pid = p_settings["pid"]
 
     try:
         bm_client.get_project(pid)
@@ -42,6 +68,8 @@ def bm_command():
             "Invalid project at {}/{}.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
         )
 
+    update_dockerfile(p_settings["requirements"], p_settings["python"])
+    
     zip_project(pid, project_path)
 
     try:

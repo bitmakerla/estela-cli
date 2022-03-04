@@ -15,6 +15,7 @@ from bm_cli.templates import (
     BITMAKER_YAML,
     BITMAKER_YAML_NAME,
     DOCKER_DEFAULT_REQUIREMENTS,
+    DOCKER_DEFAULT_PYTHON_VERSION,
     BITMAKER_DIR,
 )
 
@@ -44,6 +45,8 @@ def gen_bm_yaml(bm_client, pid=None):
     values = {
         "project_pid": pid,
         "project_data_path": DATA_DIR,
+        "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
+        "requirements_path": DOCKER_DEFAULT_REQUIREMENTS,
     }
 
     result = template.substitute(values)
@@ -71,7 +74,7 @@ def gen_dockerfile(requirements_path):
 
     template = Template(DOCKERFILE)
     values = {
-        "python_version": "3.6",
+        "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
         "requirements_path": requirements_path,
     }
     result = template.substitute(values)
