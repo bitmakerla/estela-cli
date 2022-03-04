@@ -5,7 +5,13 @@ from string import Template
 from zipfile import ZipFile, ZIP_DEFLATED
 from bm_cli.utils import get_project_path, get_bm_settings, _in, get_bm_dockerfile_path
 from bm_cli.login import login
-from bm_cli.templates import OK_EMOJI, BITMAKER_DIR, BITMAKER_YAML_NAME, DOCKERFILE, DOCKERFILE_NAME
+from bm_cli.templates import (
+    OK_EMOJI,
+    BITMAKER_DIR,
+    BITMAKER_YAML_NAME,
+    DOCKERFILE,
+    DOCKERFILE_NAME,
+)
 
 
 SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
@@ -45,7 +51,9 @@ def update_dockerfile(requirements_path, python_version):
     result = template.substitute(values)
     with open(dockerfile_path, "r") as dock:
         if result == dock.read():
-            click.echo("{}/{} not changes to update.".format(BITMAKER_DIR, DOCKERFILE_NAME))
+            click.echo(
+                "{}/{} not changes to update.".format(BITMAKER_DIR, DOCKERFILE_NAME)
+            )
             return
 
     with open(dockerfile_path, "w+") as dockerfile:
@@ -69,7 +77,7 @@ def bm_command():
         )
 
     update_dockerfile(p_settings["requirements"], p_settings["python"])
-    
+
     zip_project(pid, project_path)
 
     try:
