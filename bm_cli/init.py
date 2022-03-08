@@ -27,9 +27,7 @@ def gen_bm_yaml(bm_client, pid=None):
     bm_yaml_path = get_bm_yaml_path()
 
     if os.path.exists(bm_yaml_path):
-        raise click.ClickException(
-            "{}/{} file already exists.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
-        )
+        raise click.ClickException("{} file already exists.".format(BITMAKER_YAML_NAME))
 
     try:
         if pid is None:
