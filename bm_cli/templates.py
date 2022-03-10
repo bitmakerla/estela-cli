@@ -16,6 +16,8 @@ DATA_DIR = "project_data"
 
 DOCKER_APP_DIR = "/usr/src/app"
 
+DOCKER_DEFAULT_PYTHON_VERSION = "3.6"
+
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
 
 DOCKERFILE_NAME = "Dockerfile-bitmaker"
@@ -41,6 +43,8 @@ BITMAKER_YAML_NAME = "bitmaker.yaml"
 BITMAKER_YAML = """\
 project:
   pid: $project_pid
+  python: $python_version
+  requirements: $requirements_path
 deploy:
   ignore: [$project_data_path]
 """

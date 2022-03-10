@@ -23,7 +23,7 @@ def get_home_path():
 
 def get_bm_yaml_path():
     project_path = get_project_path()
-    return os.path.join(project_path, BITMAKER_DIR, BITMAKER_YAML_NAME)
+    return os.path.join(project_path, BITMAKER_YAML_NAME)
 
 
 def get_bm_dockerfile_path():
@@ -92,11 +92,6 @@ def format_tags(tags):
         result += "{}\n".format(tag["name"])
     result += "{}".format(tags[-1]["name"])
     return result
-
-
-def set_localhost(container_image):
-    host, image = container_image.split("/")
-    return "{}/{}".format(LOCALHOST, image)
 
 
 def save_data(filename, data):
