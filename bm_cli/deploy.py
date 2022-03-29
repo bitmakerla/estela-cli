@@ -84,9 +84,8 @@ def bm_command():
     try:
         response = bm_client.upload_project(pid, open("{}.zip".format(pid), "rb"))
     except:
-        click.ClickException("A problem occurred while uploading the project.")
         os.remove("{}.zip".format(pid))
-        return
+        raise click.ClickException("A problem occurred while uploading the project.")
 
     click.echo(
         "{} Project uploaded successfully. Deploy {} underway.".format(
