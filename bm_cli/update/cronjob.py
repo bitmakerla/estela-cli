@@ -3,7 +3,7 @@ import click
 from bm_cli.login import login
 from bm_cli.utils import get_bm_settings
 
-SHORT_HELP = "Stop an active job"
+SHORT_HELP = "Update a cronjob"
 VALID_STATUSES = ["ACTIVE", "DISABLED"]
 
 

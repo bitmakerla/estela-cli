@@ -46,7 +46,7 @@ def bm_command(
             )
     try:
         response = bm_client.get_spider_job_data(pid, sid, jid, format)
-        click.echo("{} Data retrieve succesfully.".format(OK_EMOJI))
+        click.echo("{} Data retrieved succesfully.".format(OK_EMOJI))
     except Exception as ex:
         raise click.ClickException("{} Cannot get data".format(BAD_EMOJI))
     save_data("{}-{}.{}".format(jid, pid, format), response)

@@ -32,7 +32,7 @@ SHORT_HELP = "Create a new job"
     multiple=True,
     type=click.UNPROCESSED,
     callback=set_tag_format,
-    help="Set spider cronjob tag (may have multiple)",
+    help="Set spider job tag (may have multiple)",
 )
 def bm_command(sid, pid, arg, env, tag):
     """Create a new job
