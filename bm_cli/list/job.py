@@ -9,7 +9,7 @@ from bm_cli.utils import (
     format_tags,
 )
 
-SHORT_HELP = "List the spider's jobs"
+SHORT_HELP = "List jobs of a given spider"
 
 
 @click.command(short_help=SHORT_HELP)

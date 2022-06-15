@@ -17,7 +17,7 @@ SHORT_HELP = "Create a new cronjob"
     multiple=True,
     type=click.UNPROCESSED,
     callback=validate_key_value_format,
-    help="Set spider job argument NAME=VALUE (may be repeated)",
+    help="Set spider cronjob argument NAME=VALUE (may be repeated)",
 )
 @click.option(
     "--env",
@@ -25,7 +25,7 @@ SHORT_HELP = "Create a new cronjob"
     multiple=True,
     type=click.UNPROCESSED,
     callback=validate_key_value_format,
-    help="Set spider job environment variable NAME=VALUE (may be repeated)",
+    help="Set spider cronjob environment variable NAME=VALUE (may be repeated)",
 )
 @click.option(
     "--tag",

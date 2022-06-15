@@ -5,7 +5,7 @@ from bm_cli.login import login
 from bm_cli.utils import get_bm_settings
 
 
-SHORT_HELP = "List the project's spiders"
+SHORT_HELP = "List a project's spiders"
 
 
 @click.command(short_help=SHORT_HELP)

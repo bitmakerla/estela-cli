@@ -95,7 +95,6 @@ def bm_command(pid, requirements):
     """Initialize bitmaker project
 
     PID is the project's pid
-    LOCAL is a flag that indicate if the registry host is local
     """
 
     if not os.path.exists(BITMAKER_DIR):

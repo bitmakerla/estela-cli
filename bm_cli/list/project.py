@@ -4,7 +4,7 @@ from tabulate import tabulate
 from bm_cli.login import login
 
 
-SHORT_HELP = "List the user's projects"
+SHORT_HELP = "List the current user's projects"
 
 
 @click.command(short_help=SHORT_HELP)

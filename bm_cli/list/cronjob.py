@@ -9,7 +9,7 @@ from bm_cli.utils import (
     format_tags,
 )
 
-SHORT_HELP = "List the spider's cronjobs"
+SHORT_HELP = "List cronjobs of a given spider"
 
 
 @click.command(short_help=SHORT_HELP)
