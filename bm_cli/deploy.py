@@ -7,14 +7,14 @@ from bm_cli.utils import get_project_path, get_bm_settings, _in, get_bm_dockerfi
 from bm_cli.login import login
 from bm_cli.templates import (
     OK_EMOJI,
-    BITMAKER_DIR,
-    BITMAKER_YAML_NAME,
+    ESTELA_DIR,
+    ESTELA_YAML_NAME,
     DOCKERFILE,
     DOCKERFILE_NAME,
 )
 
 
-SHORT_HELP = "Deploy Scrapy project to Bitmaker Cloud"
+SHORT_HELP = "Deploy Scrapy project to Estela "
 
 
 def zip_project(pid, project_path):
@@ -52,13 +52,13 @@ def update_dockerfile(requirements_path, python_version):
     with open(dockerfile_path, "r") as dock:
         if result == dock.read():
             click.echo(
-                "{}/{} not changes to update.".format(BITMAKER_DIR, DOCKERFILE_NAME)
+                "{}/{} not changes to update.".format(ESTELA_DIR, DOCKERFILE_NAME)
             )
             return
 
     with open(dockerfile_path, "w+") as dockerfile:
         dockerfile.write(result)
-        click.echo("{}/{} updated successfully.".format(BITMAKER_DIR, DOCKERFILE_NAME))
+        click.echo("{}/{} updated successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
 
 
 @click.command(short_help=SHORT_HELP)
@@ -73,7 +73,7 @@ def bm_command():
         bm_client.get_project(pid)
     except:
         raise click.ClickException(
-            "Invalid project at {}/{}.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
+            "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
     update_dockerfile(p_settings["requirements"], p_settings["python"])

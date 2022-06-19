@@ -9,7 +9,7 @@ from bm_cli.utils import (
     get_username_from_env,
     get_password_from_env,
 )
-from bm_cli.templates import BITMAKER_AUTH_NAME, OK_EMOJI, BAD_EMOJI
+from bm_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI, BAD_EMOJI
 
 
 SHORT_HELP = "Show your current context"
@@ -42,14 +42,14 @@ def bm_command():
         if bm_auth is None:
             click.echo(
                 "Environment variables not declared, ~/{} not found.".format(
-                    BITMAKER_AUTH_NAME
+                    ESTELA_AUTH_NAME
                 )
             )
             return
 
         click.echo(
-            "You are currently using ~/{} file to configure bitmaker CLI.".format(
-                BITMAKER_AUTH_NAME
+            "You are currently using ~/{} file to configure estela CLI.".format(
+                ESTELA_AUTH_NAME
             )
         )
 
@@ -67,7 +67,7 @@ def bm_command():
             return
     else:
         click.echo(
-            "You are currently using environment variables to configure bitmaker CLI."
+            "You are currently using environment variables to configure estela CLI."
         )
         try:
             test_host(host)

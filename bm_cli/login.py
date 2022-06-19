@@ -11,7 +11,7 @@ from bm_cli.utils import (
     get_bm_auth,
     get_home_path,
 )
-from bm_cli.templates import BITMAKER_AUTH_NAME, BITMAKER_AUTH
+from bm_cli.templates import ESTELA_AUTH_NAME, ESTELA_AUTH
 
 
 DEFAULT_BM_API_HOST = "http://localhost"
@@ -38,8 +38,8 @@ def yaml_login():
 
     if bm_auth is None:
         raise Exception(
-            "File ~/{} not found. It is recommended to login with 'bitmaker login'.".format(
-                BITMAKER_AUTH_NAME
+            "File ~/{} not found. It is recommended to login with 'estela login'.".format(
+                ESTELA_AUTH_NAME
             )
         )
 
@@ -48,7 +48,7 @@ def yaml_login():
     except:
         raise Exception(
             "Invalid context stored in ~/{}. Please login again.".format(
-                BITMAKER_AUTH_NAME
+                ESTELA_AUTH_NAME
             )
         )
 
@@ -75,7 +75,7 @@ def login(username=None, password=None, host=None):
     try:
         bm_client = env_login()
         click.echo(
-            "You are currently using environment variables to configure bitmaker CLI."
+            "You are currently using environment variables to configure estela CLI."
         )
         return bm_client
     except:
@@ -110,11 +110,11 @@ def login(username=None, password=None, host=None):
 )
 def bm_command(username, password, host):
     home_path = get_home_path()
-    bm_auth_path = os.path.join(home_path, BITMAKER_AUTH_NAME)
+    bm_auth_path = os.path.join(home_path, ESTELA_AUTH_NAME)
 
     if os.path.exists(bm_auth_path):
         raise click.ClickException(
-            "You already logged in. To change credentials run 'bitmaker logout' first."
+            "You already logged in. To change credentials run 'estela logout' first."
         )
 
     try:
@@ -122,7 +122,7 @@ def bm_command(username, password, host):
     except Exception as ex:
         raise click.ClickException(str(ex))
 
-    template = Template(BITMAKER_AUTH)
+    template = Template(ESTELA_AUTH)
     values = {
         "bm_host": bm_client.host,
         "bm_token": bm_client.token,
@@ -132,5 +132,5 @@ def bm_command(username, password, host):
     with open(bm_auth_path, "w") as bm_auth_yaml:
         bm_auth_yaml.write(result)
         click.echo(
-            "Successful login. API Token stored in ~/{}.".format(BITMAKER_AUTH_NAME)
+            "Successful login. API Token stored in ~/{}.".format(ESTELA_AUTH_NAME)
         )

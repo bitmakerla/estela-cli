@@ -1,8 +1,8 @@
 # Auth templates
 
-BITMAKER_AUTH_NAME = ".bitmaker.yaml"
+ESTELA_AUTH_NAME = ".estela.yaml"
 
-BITMAKER_AUTH = """\
+ESTELA_AUTH = """\
 token: $bm_token
 host: $bm_host
 """
@@ -10,7 +10,7 @@ host: $bm_host
 
 # Init project templates
 
-BITMAKER_DIR = ".bitmaker"
+ESTELA_DIR = ".estela"
 
 DATA_DIR = "project_data"
 
@@ -20,13 +20,13 @@ DOCKER_DEFAULT_PYTHON_VERSION = "3.6"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
 
-DOCKERFILE_NAME = "Dockerfile-bitmaker"
+DOCKERFILE_NAME = "Dockerfile-estela"
 
 DOCKERFILE = """\
 FROM python:$python_version
 
 # must be in base image
-RUN pip install git+https://github.com/bitmakerla/bitmaker-entrypoint.git
+RUN pip install git+https://github.com/estelala/estela-entrypoint.git
 
 RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
@@ -38,9 +38,9 @@ RUN mkdir /fifo-data
     app_dir=DOCKER_APP_DIR
 )
 
-BITMAKER_YAML_NAME = "bitmaker.yaml"
+ESTELA_YAML_NAME = "estela.yaml"
 
-BITMAKER_YAML = """\
+ESTELA_YAML = """\
 project:
   pid: $project_pid
   python: $python_version

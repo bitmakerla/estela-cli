@@ -5,9 +5,9 @@ import click
 
 from datetime import datetime
 from bm_cli.templates import (
-    BITMAKER_AUTH_NAME,
-    BITMAKER_YAML_NAME,
-    BITMAKER_DIR,
+    ESTELA_AUTH_NAME,
+    ESTELA_YAML_NAME,
+    ESTELA_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
 )
@@ -23,12 +23,12 @@ def get_home_path():
 
 def get_bm_yaml_path():
     project_path = get_project_path()
-    return os.path.join(project_path, BITMAKER_YAML_NAME)
+    return os.path.join(project_path, ESTELA_YAML_NAME)
 
 
 def get_bm_dockerfile_path():
     project_path = get_project_path()
-    return os.path.join(project_path, BITMAKER_DIR, DOCKERFILE_NAME)
+    return os.path.join(project_path, ESTELA_DIR, DOCKERFILE_NAME)
 
 
 def get_host_from_env():
@@ -46,7 +46,7 @@ def get_password_from_env():
 def get_bm_settings():
     bm_yaml_path = get_bm_yaml_path()
 
-    assert os.path.exists(bm_yaml_path), "{} not found.".format(BITMAKER_YAML_NAME)
+    assert os.path.exists(bm_yaml_path), "{} not found.".format(ESTELA_YAML_NAME)
 
     with open(bm_yaml_path, "r") as bm_yaml:
         bm_config = yaml.full_load(bm_yaml)
@@ -56,7 +56,7 @@ def get_bm_settings():
 
 def get_bm_auth():
     home_path = get_home_path()
-    bm_auth_path = os.path.join(home_path, BITMAKER_AUTH_NAME)
+    bm_auth_path = os.path.join(home_path, ESTELA_AUTH_NAME)
 
     if not os.path.exists(bm_auth_path):
         return None

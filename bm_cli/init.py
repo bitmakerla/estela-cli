@@ -12,22 +12,22 @@ from bm_cli.templates import (
     DATA_DIR,
     DOCKERFILE,
     DOCKERFILE_NAME,
-    BITMAKER_YAML,
-    BITMAKER_YAML_NAME,
+    ESTELA_YAML,
+    ESTELA_YAML_NAME,
     DOCKER_DEFAULT_REQUIREMENTS,
     DOCKER_DEFAULT_PYTHON_VERSION,
-    BITMAKER_DIR,
+    ESTELA_DIR,
 )
 
 
-SHORT_HELP = "Initialize bitmaker project for existing scrapy project"
+SHORT_HELP = "Initialize estela project for existing scrapy project"
 
 
 def gen_bm_yaml(bm_client, pid=None):
     bm_yaml_path = get_bm_yaml_path()
 
     if os.path.exists(bm_yaml_path):
-        raise click.ClickException("{} file already exists.".format(BITMAKER_YAML_NAME))
+        raise click.ClickException("{} file already exists.".format(ESTELA_YAML_NAME))
 
     try:
         if pid is None:
@@ -39,7 +39,7 @@ def gen_bm_yaml(bm_client, pid=None):
             "The project with id '{}' does not exists.".format(pid)
         )
 
-    template = Template(BITMAKER_YAML)
+    template = Template(ESTELA_YAML)
     values = {
         "project_pid": pid,
         "project_data_path": DATA_DIR,
@@ -52,7 +52,7 @@ def gen_bm_yaml(bm_client, pid=None):
     with open(bm_yaml_path, "w") as bm_yaml:
         bm_yaml.write(result)
         click.echo(
-            "{}/{} file created successfully.".format(BITMAKER_DIR, BITMAKER_YAML_NAME)
+            "{}/{} file created successfully.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
 
@@ -61,7 +61,7 @@ def gen_dockerfile(requirements_path):
 
     if os.path.exists(dockerfile_path):
         raise click.ClickException(
-            "{}/{} already exists.".format(BITMAKER_DIR, DOCKERFILE_NAME)
+            "{}/{} already exists.".format(ESTELA_DIR, DOCKERFILE_NAME)
         )
 
     project_path = get_project_path()
@@ -79,7 +79,7 @@ def gen_dockerfile(requirements_path):
 
     with open(dockerfile_path, "w") as dockerfile:
         dockerfile.write(result)
-        click.echo("{}/{} created successfully.".format(BITMAKER_DIR, DOCKERFILE_NAME))
+        click.echo("{}/{} created successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
 
 
 @click.command(short_help=SHORT_HELP)
@@ -92,13 +92,13 @@ def gen_dockerfile(requirements_path):
     show_default=True,
 )
 def bm_command(pid, requirements):
-    """Initialize bitmaker project
+    """Initialize estela project
 
     PID is the project's pid
     """
 
-    if not os.path.exists(BITMAKER_DIR):
-        os.makedirs(BITMAKER_DIR)
+    if not os.path.exists(ESTELA_DIR):
+        os.makedirs(ESTELA_DIR)
 
     bm_client = login()
     gen_bm_yaml(bm_client, pid)

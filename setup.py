@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="bitmaker",
+    name="estela",
     version="0.1",
-    description="Bitmaker Command Line Interface",
+    description="Estela Command Line Interface",
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "bitmaker = bm_cli.__main__:cli",
+            "estela = bm_cli.__main__:cli",
         ],
     },
     install_requires=[

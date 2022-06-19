@@ -19,7 +19,7 @@ def bm_command(name):
         response = bm_client.create_project(name)
         click.echo("project/{} created.".format(name))
         click.echo(
-            "Hint: Run 'bitmaker init {}' to activate this project".format(
+            "Hint: Run 'estela init {}' to activate this project".format(
                 response["pid"]
             )
         )
