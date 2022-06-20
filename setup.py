@@ -7,7 +7,7 @@ setup(
     packages=find_packages(),
     entry_points={
         "console_scripts": [
-            "estela = bm_cli.__main__:cli",
+            "estela = estela_cli.__main__:cli",
         ],
     },
     install_requires=[

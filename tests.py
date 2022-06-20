@@ -1,12 +1,12 @@
 import os
 import unittest
 
-from bm_cli.bm_client import BmClient
-from bm_cli.login import login, DEFAULT_BM_API_HOST
+from estela_cli.estela_client import EstelaClient
+from estela_cli.login import login, DEFAULT_ESTELA_API_HOST
 from dotenv import load_dotenv
 
 
-class TestBMClient(unittest.TestCase):
+class TestESTELAClient(unittest.TestCase):
     client = None
 
     def __init__(self, *args, **kwargs):
@@ -15,8 +15,8 @@ class TestBMClient(unittest.TestCase):
 
     def test_wrong_credentials(self):
         with self.assertRaises(Exception) as error:
-            BmClient(
-                DEFAULT_BM_API_HOST, username="wrong_user", password="wrong_password"
+            EstelaClient(
+                DEFAULT_ESTELA_API_HOST, username="wrong_user", password="wrong_password"
             )
         self.assertEqual(
             str(error.exception), "['Unable to log in with provided credentials.']"
