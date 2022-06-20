@@ -19,9 +19,9 @@ Options:
 Commands:
   context  Show your current context
   create   Create a resource
+  data     Returns all the data of a job and saves it in a json file
   delete   Delete a resource
   deploy   Deploy Scrapy project to Estela API
-  data     Returns all the data of a job and saves it in a json file
   init     Initialize estela project for existing scrapy project
   list     Display the available resources
   login    Save your credentials
