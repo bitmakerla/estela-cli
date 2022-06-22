@@ -1,15 +1,15 @@
-<h1 align="center"> Bitmaker Cloud CLI </h1>
+<h1 align="center"> Estela CLI </h1>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Bitmaker Cloud CLI is the command line client to interact with Bitmaker Cloud API. Allows the user to perform the following actions:
-- Link a Scrapy project with a project in Bitmaker Cloud.
-- Create projects, jobs, and cronjobs in Bitmaker Cloud.
+Estela CLI is the command line client to interact with Estela API. Allows the user to perform the following actions:
+- Link a Scrapy project with a project in Estela.
+- Create projects, jobs, and cronjobs in Estela.
 - Get the data of a job.
 
 ```bash
-$ bitmaker
-Usage: bitmaker [OPTIONS] COMMAND [ARGS]...
+$ estela
+Usage: estela [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --version   Show the version and exit.
@@ -19,10 +19,10 @@ Options:
 Commands:
   context  Show your current context
   create   Create a resource
-  delete   Delete a resource
-  deploy   Deploy Scrapy project to Bitmaker Cloud
   data     Returns all the data of a job and saves it in a json file
-  init     Initialize bitmaker project for existing scrapy project
+  delete   Delete a resource
+  deploy   Deploy Scrapy project to Estela API
+  init     Initialize estela project for existing scrapy project
   list     Display the available resources
   login    Save your credentials
   logout   Remove your credentials
