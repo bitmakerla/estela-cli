@@ -1,5 +1,5 @@
+from datetime import date, timedelta
 import requests
-import os
 
 
 class EstelaSimpleClient:
@@ -178,12 +178,14 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.text
 
-    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[]):
+    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[], day=None):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
         data = {
             "args": args,
             "env_vars": env_vars,
             "tags": tags,
+            "data_status": "PERSISTENT" if day is None else "PENDING",
+            "data_expiry_days": None if day is None else "{}".format(date.today() + timedelta(days=day)),
         }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
@@ -196,7 +198,7 @@ class EstelaClient(EstelaSimpleClient):
         return response.json()
 
     def create_spider_cronjob(
-        self, pid, sid, schedule="", args=[], env_vars=[], tags=[]
+        self, pid, sid, schedule="", args=[], env_vars=[], tags=[], day=None
     ):
         endpoint = "projects/{}/spiders/{}/cronjobs".format(pid, sid)
         data = {
@@ -204,6 +206,8 @@ class EstelaClient(EstelaSimpleClient):
             "cargs": args,
             "cenv_vars": env_vars,
             "ctags": tags,
+            "data_status": "PERSISTENT" if day is None else "PENDING",
+            "data_expiry_days": None if day is None else "0/{}".format(day),
         }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
