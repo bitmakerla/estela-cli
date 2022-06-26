@@ -131,7 +131,6 @@ def set_day_format(ctx, param, value):
         raise click.BadParameter("format must be a number")
 
 
-
 def _in(path, ignore_files):
     for file in ignore_files:
         if path.startswith(file):

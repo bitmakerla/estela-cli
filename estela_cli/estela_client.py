@@ -185,7 +185,9 @@ class EstelaClient(EstelaSimpleClient):
             "env_vars": env_vars,
             "tags": tags,
             "data_status": "PERSISTENT" if day is None else "PENDING",
-            "data_expiry_days": None if day is None else "{}".format(date.today() + timedelta(days=day)),
+            "data_expiry_days": None
+            if day is None
+            else "{}".format(date.today() + timedelta(days=day)),
         }
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)

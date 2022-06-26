@@ -1,7 +1,12 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings, validate_key_value_format, set_tag_format, set_day_format
+from estela_cli.utils import (
+    get_estela_settings,
+    validate_key_value_format,
+    set_tag_format,
+    set_day_format,
+)
 
 
 SHORT_HELP = "Create a new job"

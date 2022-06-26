@@ -14,9 +14,7 @@ def estela_command():
     estela_auth_path = os.path.join(home_path, ESTELA_AUTH_NAME)
 
     if not os.path.exists(estela_auth_path):
-        raise click.ClickException(
-            "You have not logged in. Run 'estela login' first."
-        )
+        raise click.ClickException("You have not logged in. Run 'estela login' first.")
 
     os.remove(estela_auth_path)
     click.echo("Successful logout.")
