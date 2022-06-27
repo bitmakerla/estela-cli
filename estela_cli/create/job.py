@@ -42,8 +42,7 @@ SHORT_HELP = "Create a new job"
 @click.option(
     "--day",
     "-d",
-    multiple=True,
-    type=click.UNPROCESSED,
+    type=click.INT,
     callback=set_day_format,
     help="Set spider job data expiry days",
 )
@@ -65,6 +64,7 @@ def estela_command(sid, pid, arg, env, tag, day):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
+        print(pid, sid, arg, env, tag, day)
         response = estela_client.create_spider_job(pid, sid, arg, env, tag, day)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:

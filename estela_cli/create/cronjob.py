@@ -43,10 +43,9 @@ SHORT_HELP = "Create a new cronjob"
 @click.option(
     "--day",
     "-d",
-    multiple=True,
-    type=click.UNPROCESSED,
+    type=click.INT,
     callback=set_day_format,
-    help="Set spider job data expiry days",
+    help="Set spider cronjob data expiry days",
 )
 def estela_command(sid, pid, schedule, arg, env, tag, day):
     """Create a new cronjob

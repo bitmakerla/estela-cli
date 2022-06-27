@@ -125,10 +125,12 @@ def set_tag_format(ctx, param, value):
 
 
 def set_day_format(ctx, param, value):
-    try:
-        return int(value)
-    except:
-        raise click.BadParameter("format must be a number")
+    if value:
+        try:
+            return int(value)
+        except:
+            raise click.BadParameter("format must be a number")
+    return None
 
 
 def _in(path, ignore_files):
