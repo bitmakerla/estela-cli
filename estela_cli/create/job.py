@@ -64,7 +64,6 @@ def estela_command(sid, pid, arg, env, tag, day):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        print(pid, sid, arg, env, tag, day)
         response = estela_client.create_spider_job(pid, sid, arg, env, tag, day)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:
