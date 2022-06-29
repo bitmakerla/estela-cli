@@ -16,7 +16,9 @@ class TestEstelaClient(unittest.TestCase):
     def test_wrong_credentials(self):
         with self.assertRaises(Exception) as error:
             EstelaClient(
-                DEFAULT_ESTELA_API_HOST, username="wrong_user", password="wrong_password"
+                DEFAULT_ESTELA_API_HOST,
+                username="wrong_user",
+                password="wrong_password",
             )
             self.assertEqual(
                 str(error.exception), "['Unable to log in with provided credentials.']"
@@ -68,6 +70,7 @@ class TestEstelaClient(unittest.TestCase):
         self.assertEqual(project["name"], project_name)
 
         self.client.delete_project(project["pid"])
+
 
 if __name__ == "__main__":
     load_dotenv()

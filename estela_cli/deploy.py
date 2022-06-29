@@ -3,7 +3,12 @@ import click
 
 from string import Template
 from zipfile import ZipFile, ZIP_DEFLATED
-from estela_cli.utils import get_project_path, get_estela_settings, _in, get_estela_dockerfile_path
+from estela_cli.utils import (
+    get_project_path,
+    get_estela_settings,
+    _in,
+    get_estela_dockerfile_path,
+)
 from estela_cli.login import login
 from estela_cli.templates import (
     OK_EMOJI,

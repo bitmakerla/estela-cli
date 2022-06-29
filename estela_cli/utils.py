@@ -124,6 +124,15 @@ def set_tag_format(ctx, param, value):
     return tags
 
 
+def set_day_format(ctx, param, value):
+    if value:
+        try:
+            return int(value)
+        except:
+            raise click.BadParameter("format must be a number")
+    return None
+
+
 def _in(path, ignore_files):
     for file in ignore_files:
         if path.startswith(file):

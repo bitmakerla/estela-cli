@@ -1,7 +1,12 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings, validate_key_value_format, set_tag_format
+from estela_cli.utils import (
+    get_estela_settings,
+    validate_key_value_format,
+    set_tag_format,
+    set_day_format,
+)
 
 
 SHORT_HELP = "Create a new cronjob"
@@ -35,7 +40,14 @@ SHORT_HELP = "Create a new cronjob"
     callback=set_tag_format,
     help="Set spider cronjob tag (may have multiple)",
 )
-def estela_command(sid, pid, schedule, arg, env, tag):
+@click.option(
+    "--day",
+    "-d",
+    type=click.INT,
+    callback=set_day_format,
+    help="Set spider cronjob data expiry days",
+)
+def estela_command(sid, pid, schedule, arg, env, tag, day):
     """Create a new cronjob
 
     \b
@@ -54,7 +66,9 @@ def estela_command(sid, pid, schedule, arg, env, tag):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        response = estela_client.create_spider_cronjob(pid, sid, schedule, arg, env, tag)
+        response = estela_client.create_spider_cronjob(
+            pid, sid, schedule, arg, env, tag, day
+        )
         click.echo("cronjob/{} created.".format(response["name"]))
     except Exception as ex:
         raise click.ClickException(
