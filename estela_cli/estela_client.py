@@ -187,7 +187,7 @@ class EstelaClient(EstelaSimpleClient):
             "tags": tags,
             "data_status": "PENDING" if day else "PERSISTENT",
         }
-        if day:
+        if day and day >= 1:
             data["data_expiry_days"] = f"{date.today() + timedelta(days=day)}"
 
         response = self.post(endpoint, data=data)
@@ -211,7 +211,7 @@ class EstelaClient(EstelaSimpleClient):
             "ctags": tags,
             "data_status": "PENDING" if day else "PERSISTENT",
         }
-        if day:
+        if day and day >= 1:
             data["data_expiry_days"] = f"0/{day}"
 
         response = self.post(endpoint, data=data)
