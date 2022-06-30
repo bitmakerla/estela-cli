@@ -11,30 +11,25 @@ VALID_STATUSES = ["ACTIVE", "DISABLED"]
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
-# @click.option(
-#     "--status",
-#     type=click.Choice(VALID_STATUSES, case_sensitive=False),
-#     help="Set cronjob status",
-# )
-# @click.option(
-#     "--schedule",
-#     "-s",
-#     type=click.STRING,
-#     help="Set cronjob crontab schedule",
-# )
+@click.option(
+    "--persistent",
+    "-p",
+    type=click.BOOL,
+    help="Set job data persistent",
+)
 @click.option(
     "--day",
     "-d",
     type=click.INT,
-    help="Set spider cronjob data expiry days",
+    help="Set spider job data expiry days",
 )
-def estela_command(jid, sid, pid, day):
-    """Update a cronjob
+def estela_command(jid, sid, pid, day, persistent):
+    """Update a job
 
     \b
     SID is the spider's sid
     PID is the project's pid (active project by default)
-    CJID is the cronjob's cjid
+    JID is the job's jid
     """
 
     estela_client = login()
@@ -47,13 +42,13 @@ def estela_command(jid, sid, pid, day):
                 "No active project in the current directory. Please specify the PID."
             )
 
-    if day is None:
+    if day is None and persistent is None:
         raise click.ClickException(
-            "Days was not provided to update the job. Please specify the amount of days."
+            "Neither days nor data_status was not provided to update the job. Please specify the amount of days."
         )
 
     try:
-        response = estela_client.update_spider_job(pid, sid, jid, day)
+        response = estela_client.update_spider_job(pid, sid, jid, day, persistent)
         click.echo(f"job/spider-job-{jid}-{pid} updated.")
     except Exception as ex:
         raise click.ClickException(

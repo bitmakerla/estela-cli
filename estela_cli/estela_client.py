@@ -219,13 +219,12 @@ class EstelaClient(EstelaSimpleClient):
         return response.json()
 
     
-    def update_spider_job(self, pid, sid, jid, day):
+    def update_spider_job(self, pid, sid, jid, day, persistent):
         endpoint = "projects/{}/spiders/{}/jobs/{}".format(pid, sid, jid)
-        data = {
-            # "status": status,
-            # "schedule": schedule,
-        }
-        if day and day >= 1:
+        data = {}   
+        if persistent:
+            data["data_status"] = "PERSISTENT"
+        elif day and day >= 1:
             data["data_status"] = "PENDING"
             data["data_expiry_days"] = day
 
@@ -234,12 +233,14 @@ class EstelaClient(EstelaSimpleClient):
         return response.json()
 
     
-    def update_spider_cronjob(self, pid, sid, cjid, status, schedule, day):
+    def update_spider_cronjob(self, pid, sid, cjid, status, schedule, day, persistent):
         endpoint = "projects/{}/spiders/{}/cronjobs/{}".format(pid, sid, cjid)
         data = {
             "status": status,
             "schedule": schedule,
         }
+        if persistent:
+            data["data_status"] = "PERSISTENT"
         if day and day >= 1:
             data["data_status"] = "PENDING"
             data["data_expiry_days"] = day
