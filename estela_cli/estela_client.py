@@ -218,12 +218,32 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 201)
         return response.json()
 
-    def update_spider_cronjob(self, pid, sid, cjid, status, schedule):
+    
+    def update_spider_job(self, pid, sid, jid, day):
+        endpoint = "projects/{}/spiders/{}/jobs/{}".format(pid, sid, jid)
+        data = {
+            # "status": status,
+            # "schedule": schedule,
+        }
+        if day and day >= 1:
+            data["data_status"] = "PENDING"
+            data["data_expiry_days"] = day
+
+        response = self.put(endpoint, data=data)
+        self.check_status(response, 200)
+        return response.json()
+
+    
+    def update_spider_cronjob(self, pid, sid, cjid, status, schedule, day):
         endpoint = "projects/{}/spiders/{}/cronjobs/{}".format(pid, sid, cjid)
         data = {
             "status": status,
             "schedule": schedule,
         }
+        if day and day >= 1:
+            data["data_status"] = "PENDING"
+            data["data_expiry_days"] = day
+
         response = self.put(endpoint, data=data)
         self.check_status(response, 200)
         return response.json()
