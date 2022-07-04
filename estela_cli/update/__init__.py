@@ -9,7 +9,7 @@ def estela_command():
 
 commands = [
     "cronjob",
-    "job"
+    "job",
 ]
 
 for command in commands:

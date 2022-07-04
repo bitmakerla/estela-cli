@@ -1,7 +1,7 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings
+from estela_cli.utils import get_estela_settings, validate_positive
 
 SHORT_HELP = "Update a cronjob"
 VALID_STATUSES = ["ACTIVE", "DISABLED"]
@@ -14,25 +14,26 @@ VALID_STATUSES = ["ACTIVE", "DISABLED"]
 @click.option(
     "--status",
     type=click.Choice(VALID_STATUSES, case_sensitive=False),
-    help="Set cronjob status",
+    help="Set cronjob status.",
 )
 @click.option(
     "--schedule",
     "-s",
     type=click.STRING,
-    help="Set cronjob crontab schedule",
+    help="Set cronjob crontab schedule.",
 )
 @click.option(
     "--persistent",
-    "-p",
-    type=click.BOOL,
-    help="Set job data persistent (true/false)",
+    is_flag=True,
+    default=None,
+    help="Set job data as persistent.",
 )
 @click.option(
     "--day",
     "-d",
     type=click.INT,
-    help="Set spider cronjob data expiry days",
+    callback=validate_positive,
+    help="Set spider cronjob data expiry days.",
 )
 def estela_command(cjid, sid, pid, status, schedule, day, persistent):
     """Update a cronjob
@@ -53,13 +54,15 @@ def estela_command(cjid, sid, pid, status, schedule, day, persistent):
                 "No active project in the current directory. Please specify the PID."
             )
 
-    if status is None and schedule is None and day is None and persistent is None:
+    if all([option is None for option in [status, schedule, day, persistent]]):
         raise click.ClickException(
-            "Neither status nor schedule nor days nor data_status was provided to update the cronjob. Please specify either or both."
+            "No update option was provided to update the cronjob. Please specify at least one."
         )
 
     try:
-        response = estela_client.update_spider_cronjob(pid, sid, cjid, status, schedule, day, persistent)
+        response = estela_client.update_spider_cronjob(
+            pid, sid, cjid, status, schedule, day, persistent
+        )
         click.echo(f"cronjob/spider-cjob-{cjid}-{pid} updated.")
     except Exception as ex:
         raise click.ClickException(

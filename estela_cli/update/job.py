@@ -1,10 +1,9 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings
+from estela_cli.utils import get_estela_settings, validate_positive
 
 SHORT_HELP = "Update a job"
-VALID_STATUSES = ["ACTIVE", "DISABLED"]
 
 
 @click.command(short_help=SHORT_HELP)
@@ -13,15 +12,16 @@ VALID_STATUSES = ["ACTIVE", "DISABLED"]
 @click.argument("pid", required=False)
 @click.option(
     "--persistent",
-    "-p",
-    type=click.BOOL,
-    help="Set job data persistent",
+    is_flag=True,
+    default=None,
+    help="Set job data as persistent.",
 )
 @click.option(
     "--day",
     "-d",
     type=click.INT,
-    help="Set spider job data expiry days",
+    callback=validate_positive,
+    help="Set spider job data expiry days.",
 )
 def estela_command(jid, sid, pid, day, persistent):
     """Update a job
@@ -42,9 +42,9 @@ def estela_command(jid, sid, pid, day, persistent):
                 "No active project in the current directory. Please specify the PID."
             )
 
-    if day is None and persistent is None:
+    if all([option is None for option in [day, persistent]]):
         raise click.ClickException(
-            "Neither days nor data_status was not provided to update the job. Please specify the amount of days."
+            "No update option was provided to update the job. Please specify at least one."
         )
 
     try:

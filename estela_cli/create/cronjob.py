@@ -5,7 +5,7 @@ from estela_cli.utils import (
     get_estela_settings,
     validate_key_value_format,
     set_tag_format,
-    set_day_format,
+    validate_positive,
 )
 
 
@@ -44,7 +44,7 @@ SHORT_HELP = "Create a new cronjob"
     "--day",
     "-d",
     type=click.INT,
-    callback=set_day_format,
+    callback=validate_positive,
     help="Set spider cronjob data expiry days",
 )
 def estela_command(sid, pid, schedule, arg, env, tag, day):
