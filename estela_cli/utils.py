@@ -117,20 +117,17 @@ def validate_key_value_format(ctx, param, value):
         raise click.BadParameter("format must be 'NAME=VALUE'")
 
 
+def validate_positive(ctx, param, value):
+    if value is not None and value <= 0:
+        raise click.BadParameter("must be a positive integer.")
+    return value
+
+
 def set_tag_format(ctx, param, value):
     tags = []
     for tag_name in value:
         tags.append({"name": tag_name})
     return tags
-
-
-def set_day_format(ctx, param, value):
-    if value:
-        try:
-            return int(value)
-        except:
-            raise click.BadParameter("format must be a number")
-    return None
 
 
 def _in(path, ignore_files):

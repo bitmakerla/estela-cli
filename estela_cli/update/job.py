@@ -3,25 +3,13 @@ import click
 from estela_cli.login import login
 from estela_cli.utils import get_estela_settings, validate_positive
 
-SHORT_HELP = "Update a cronjob"
-VALID_STATUSES = ["ACTIVE", "DISABLED"]
+SHORT_HELP = "Update a job"
 
 
 @click.command(short_help=SHORT_HELP)
-@click.argument("cjid", required=True)
+@click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
-@click.option(
-    "--status",
-    type=click.Choice(VALID_STATUSES, case_sensitive=False),
-    help="Set cronjob status.",
-)
-@click.option(
-    "--schedule",
-    "-s",
-    type=click.STRING,
-    help="Set cronjob crontab schedule.",
-)
 @click.option(
     "--persistent",
     is_flag=True,
@@ -33,15 +21,15 @@ VALID_STATUSES = ["ACTIVE", "DISABLED"]
     "-d",
     type=click.INT,
     callback=validate_positive,
-    help="Set spider cronjob data expiry days.",
+    help="Set spider job data expiry days.",
 )
-def estela_command(cjid, sid, pid, status, schedule, day, persistent):
-    """Update a cronjob
+def estela_command(jid, sid, pid, day, persistent):
+    """Update a job
 
     \b
     SID is the spider's sid
     PID is the project's pid (active project by default)
-    CJID is the cronjob's cjid
+    JID is the job's jid
     """
 
     estela_client = login()
@@ -54,16 +42,14 @@ def estela_command(cjid, sid, pid, status, schedule, day, persistent):
                 "No active project in the current directory. Please specify the PID."
             )
 
-    if all([option is None for option in [status, schedule, day, persistent]]):
+    if all([option is None for option in [day, persistent]]):
         raise click.ClickException(
-            "No update option was provided to update the cronjob. Please specify at least one."
+            "No update option was provided to update the job. Please specify at least one."
         )
 
     try:
-        response = estela_client.update_spider_cronjob(
-            pid, sid, cjid, status, schedule, day, persistent
-        )
-        click.echo(f"cronjob/spider-cjob-{cjid}-{pid} updated.")
+        response = estela_client.update_spider_job(pid, sid, jid, day, persistent)
+        click.echo(f"job/spider-job-{jid}-{pid} updated.")
     except Exception as ex:
         raise click.ClickException(
             "Some values are invalid or you do not have permission to perform this action."

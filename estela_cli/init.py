@@ -52,7 +52,7 @@ def gen_estela_yaml(estela_client, pid=None):
     with open(estela_yaml_path, "w") as estela_yaml:
         estela_yaml.write(result)
         click.echo(
-            "{}/{} file created successfully.".format(ESTELA_DIR, ESTELA_YAML_NAME)
+            "{} file created successfully.".format(ESTELA_YAML_NAME)
         )
 
 
