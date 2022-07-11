@@ -1,11 +1,8 @@
 <h1 align="center"> Estela CLI </h1>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
-[![version](https://img.shields.io/badge/version-0.1-blue)](https://github.com/bitmakerla/estela)
+[![version](https://img.shields.io/badge/version-0.1-blue)](https://github.com/bitmakerla/estela-cli)
 [![python-version](https://img.shields.io/badge/python-v3.10-orange)](https://www.python.org)
-[![build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/bitmakerla/estela/actions)
-![CI](https://github.com/eslint/eslint/workflows/CI/badge.svg)
 
 
 Estela CLI is the command line client to interact with Estela API. Allows the user to perform the following actions:
