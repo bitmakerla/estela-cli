@@ -1,6 +1,9 @@
 <h1 align="center"> Estela CLI </h1>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![version](https://img.shields.io/badge/version-0.1-blue)](https://github.com/bitmakerla/estela-cli)
+[![python-version](https://img.shields.io/badge/python-v3.10-orange)](https://www.python.org)
+
 
 Estela CLI is the command line client to interact with Estela API. Allows the user to perform the following actions:
 - Link a Scrapy project with a project in Estela.
