@@ -11,9 +11,9 @@ jobs:
 
     - name: Run tests
       env:
-        HOST: ${{ secrets.HOST_API }}
-        USERNAME: ${{ secrets.USERNAME_API }}
-        PASSWORD: ${{ secrets.PASSWORD_API }}
+        HOST: ${{ secrets.ESTELA_API_HOST }}
+        USERNAME: ${{ secrets.ESTELA_USERNAME }}
+        PASSWORD: ${{ secrets.ESTELA_PASSWORD }}
       run: |
         pip install -r requirements/test.txt
         python tests.py
