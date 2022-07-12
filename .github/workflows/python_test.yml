@@ -1,0 +1,19 @@
+name: Test MR
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Run tests
+      env:
+        HOST: ${{ secrets.HOST_API }}
+        USERNAME: ${{ secrets.USERNAME_API }}
+        PASSWORD: ${{ secrets.PASSWORD_API }}
+      run: |
+        pip install -r requirements/test.txt
+        python tests.py
