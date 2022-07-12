@@ -2,7 +2,7 @@ import os
 import unittest
 
 from estela_cli.estela_client import EstelaClient
-from estela_cli.login import login, DEFAULT_ESTELA_API_HOST
+from estela_cli.login import env_login, DEFAULT_ESTELA_API_HOST
 from dotenv import load_dotenv
 
 
@@ -10,7 +10,7 @@ class TestEstelaClient(unittest.TestCase):
     client = None
 
     def __init__(self, *args, **kwargs):
-        self.client = login()
+        self.client = env_login()
         super().__init__(*args, **kwargs)
 
     def test_wrong_credentials(self):
