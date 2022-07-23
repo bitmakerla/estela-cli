@@ -40,7 +40,7 @@ def zip_project(pid, project_path):
                 zip.write(filename, arcname)
 
 
-def update_dockerfile(requirements_path, python_version):
+def update_dockerfile(requirements_path, python_version, repository_entrypoint, branch):
     dockerfile_path = get_estela_dockerfile_path()
 
     project_path = get_project_path()
@@ -52,6 +52,8 @@ def update_dockerfile(requirements_path, python_version):
     values = {
         "python_version": python_version,
         "requirements_path": requirements_path,
+        "repository_entrypoint": repository_entrypoint,
+        "branch": branch,
     }
     result = template.substitute(values)
     with open(dockerfile_path, "r") as dock:
@@ -81,7 +83,12 @@ def estela_command():
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
-    update_dockerfile(p_settings["requirements"], p_settings["python"])
+    update_dockerfile(
+        p_settings["requirements"],
+        p_settings["python"],
+        p_settings["repository"],
+        p_settings["branch"]
+    )
 
     zip_project(pid, project_path)
 
