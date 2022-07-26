@@ -30,7 +30,6 @@ DOCKERFILE = """\
 FROM python:$python_version
 
 # must be in base image
-# RUN pip install git+https://github.com/bitmakerla/estela-entrypoint.git@master
 RUN pip install git+$repository_entrypoint@$branch
 RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
