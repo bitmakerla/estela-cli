@@ -20,9 +20,7 @@ DOCKER_DEFAULT_PYTHON_VERSION = "3.6"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
 
-DOCKER_DEFAULT_REPOSITORY = "https://github.com/bitmakerla/estela-entrypoint.git"
-
-DOCKER_DEFAULT_BRANCH = "master"
+DOCKER_DEFAULT_ENTRYPOINT = "git+https://github.com/bitmakerla/estela-entrypoint.git"
 
 DOCKERFILE_NAME = "Dockerfile-estela"
 
@@ -30,7 +28,7 @@ DOCKERFILE = """\
 FROM python:$python_version
 
 # must be in base image
-RUN pip install git+$repository_entrypoint@$branch
+RUN pip install $entrypoint
 RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
 COPY . {app_dir}
@@ -48,8 +46,7 @@ project:
   pid: $project_pid
   python: $python_version
   requirements: $requirements_path
-  repository: $repository_entrypoint
-  branch: $branch
+  entrypoint: $entrypoint
 deploy:
   ignore: [$project_data_path]
 """

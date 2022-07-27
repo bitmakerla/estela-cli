@@ -86,8 +86,7 @@ def estela_command():
     update_dockerfile(
         p_settings["requirements"],
         p_settings["python"],
-        p_settings["repository"],
-        p_settings["branch"]
+        p_settings["entrypoint"],
     )
 
     zip_project(pid, project_path)
