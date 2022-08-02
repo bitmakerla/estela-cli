@@ -40,7 +40,7 @@ def zip_project(pid, project_path):
                 zip.write(filename, arcname)
 
 
-def update_dockerfile(requirements_path, python_version, repository_entrypoint, branch):
+def update_dockerfile(requirements_path, python_version, entrypoint):
     dockerfile_path = get_estela_dockerfile_path()
 
     project_path = get_project_path()
@@ -52,8 +52,7 @@ def update_dockerfile(requirements_path, python_version, repository_entrypoint, 
     values = {
         "python_version": python_version,
         "requirements_path": requirements_path,
-        "repository_entrypoint": repository_entrypoint,
-        "branch": branch,
+        "entrypoint": entrypoint,
     }
     result = template.substitute(values)
     with open(dockerfile_path, "r") as dock:
