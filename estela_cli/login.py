@@ -24,7 +24,7 @@ def env_login():
     host = get_host_from_env()
     username = get_username_from_env()
     password = get_password_from_env()
-    print(host, username, password)
+
     try:
         estela_client = EstelaClient(host, username, password)
     except:

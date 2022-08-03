@@ -56,7 +56,16 @@ def gen_estela_yaml(estela_client, pid=None):
         )
 
 
+def delete_estela_template():
+    estela_yaml_path = get_estela_yaml_path()
+
+    if os.path.exists(estela_yaml_path):
+        os.remove(estela_yaml_path)
+
 def gen_dockerfile(requirements_path):
+    if not os.path.exists(ESTELA_DIR):
+        os.makedirs(ESTELA_DIR)
+
     dockerfile_path = get_estela_dockerfile_path()
 
     if os.path.exists(dockerfile_path):
@@ -81,6 +90,13 @@ def gen_dockerfile(requirements_path):
         dockerfile.write(result)
         click.echo("{}/{} created successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
 
+def delete_dockerfile():
+    dockerfile_path = get_estela_dockerfile_path()
+
+    if os.path.exists(dockerfile_path):
+        os.remove(dockerfile_path)
+        os.rmdir(ESTELA_DIR)
+
 
 @click.command(short_help=SHORT_HELP)
 @click.argument("pid", required=True)
@@ -96,9 +112,6 @@ def estela_command(pid, requirements):
 
     PID is the project's pid
     """
-
-    if not os.path.exists(ESTELA_DIR):
-        os.makedirs(ESTELA_DIR)
 
     estela_client = login()
     gen_estela_yaml(estela_client, pid)

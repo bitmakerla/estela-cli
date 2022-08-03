@@ -246,3 +246,7 @@ class EstelaClient(EstelaSimpleClient):
         response = self.put(endpoint, data=data)
         self.check_status(response, 200)
         return response.json()
+
+class DefaultEstelaClient():
+    def get_project(self, pid):
+        return pid
