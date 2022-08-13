@@ -10,6 +10,7 @@ from estela_cli.utils import (
 )
 from estela_cli.templates import (
     DATA_DIR,
+    DOCKER_DEFAULT_ENTRYPOINT,
     DOCKERFILE,
     DOCKERFILE_NAME,
     ESTELA_YAML,
@@ -45,6 +46,7 @@ def gen_estela_yaml(estela_client, pid=None):
         "project_data_path": DATA_DIR,
         "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
         "requirements_path": DOCKER_DEFAULT_REQUIREMENTS,
+        "entrypoint": DOCKER_DEFAULT_ENTRYPOINT,
     }
 
     result = template.substitute(values)
@@ -74,6 +76,7 @@ def gen_dockerfile(requirements_path):
     values = {
         "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
         "requirements_path": requirements_path,
+        "entrypoint": DOCKER_DEFAULT_ENTRYPOINT,
     }
     result = template.substitute(values)
 
