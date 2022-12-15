@@ -41,6 +41,14 @@ Args:
 
 ## Installation
 
+estela is available on PyPI:
+
+```bash
+$ python -m pip install estela
+```
+
+Or, you can install estela manually:
+
 ```bash
 $ python setup.py install
 ```
