@@ -5,7 +5,7 @@
 [![python-version](https://img.shields.io/badge/python-v3.10-orange)](https://www.python.org)
 
 
-estala CLI is a command line client to interact with the estela API. It allows the user to perform the following actions:
+estela CLI is a command line client to interact with the estela API. It allows the user to perform the following actions:
 - Link a Scrapy project with a project in estela.
 - Create projects, jobs, and cronjobs in estela.
 - Get the data of a job.
