@@ -19,7 +19,7 @@ from estela_cli.templates import (
 )
 
 
-SHORT_HELP = "Deploy Scrapy project to Estela API"
+SHORT_HELP = "Deploy Scrapy project to estela API"
 
 
 def zip_project(pid, project_path):

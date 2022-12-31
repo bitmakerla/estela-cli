@@ -1,5 +1,6 @@
 import os
 import yaml
+import csv
 import json
 import click
 
@@ -94,16 +95,40 @@ def format_tags(tags):
     return result
 
 
-def save_data(filename, data):
+def save_chunk_data(filename, data):
     project_path = get_project_path()
+    filename = os.path.join(project_path, DATA_DIR, filename)
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
+    if not os.path.exists(filename):
+        with open(filename, "w", encoding="utf-8") as F:
+            F.write("[")
+    with open(filename, "a", encoding="utf-8") as F:
+        for item in data:
+            F.write(json.dumps(item))
+            F.write(",")
+
+
+def save_data(filename, tmp_filename):
+    project_path = get_project_path()
     filename = os.path.join(project_path, DATA_DIR, filename)
-    with open(filename, "w", encoding="utf-8") as F:
-        if "json" in filename:
-            json.dump(data, F, ensure_ascii=False, indent=4)
-        elif "csv" in filename:
-            F.write(data)
+    tmp_filename = os.path.join(project_path, DATA_DIR, tmp_filename)
+    with open(tmp_filename, "rb+") as F:
+        F.seek(-1, 2)
+        F.truncate()
+        F.write(b"]\n")
+
+    if "json" in filename:
+        os.rename(tmp_filename, filename)
+    elif "csv" in filename:
+        with open(tmp_filename, "r", encoding="utf-8") as F:
+            data = json.load(F)
+        with open(filename, "w", encoding="utf-8") as F:
+            keys = data[0].keys()
+            writer = csv.DictWriter(F, keys)
+            writer.writeheader()
+            writer.writerows(data)
+            os.remove(tmp_filename)
 
 
 def validate_key_value_format(ctx, param, value):

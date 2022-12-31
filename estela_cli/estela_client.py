@@ -26,7 +26,7 @@ class EstelaSimpleClient:
         return "{}/{}".format(self.api_base, endpoint)
 
     def get_default_headers(self):
-        headers = {}
+        headers = {"User-Agent": "estela-cli/0.1"}
         if self.token:
             headers["Authorization"] = "Token {}".format(self.token)
         return headers
@@ -171,13 +171,15 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def get_spider_job_data(self, pid, sid, jid, format):
-        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode={}".format(
-            pid, sid, jid, format
+    def get_spider_job_data(self, pid, sid, jid, last_chunk=None):
+        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode=paged".format(
+            pid, sid, jid
         )
+        if last_chunk:
+            endpoint += "&current_chunk={}".format(last_chunk)
         response = self.get(endpoint)
         self.check_status(response, 200)
-        return response.text
+        return response.json()
 
     def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[], day=None):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)

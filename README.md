@@ -17,26 +17,19 @@ Usage: estela [OPTIONS] COMMAND [ARGS]...
 Options:
   --version   Show the version and exit.
   -h, --help  Show this message and exit.
-  -l, --local When init a project, indicate that you use local-registry       
 
 Commands:
   context  Show your current context
   create   Create a resource
-  data     Returns all the data of a job and saves it in a json file
+  data     Retrieve data from a given job and save it locally
   delete   Delete a resource
-  deploy   Deploy Scrapy project to Estela API
+  deploy   Deploy Scrapy project to estela API
   init     Initialize estela project for existing scrapy project
   list     Display the available resources
   login    Save your credentials
   logout   Remove your credentials
   stop     Stop an active job or cronjob
   update   Update a resource
-
-Args:
-  project  All projects or a project if it is followed by the ID of that project
-  spider   All the spiders or a spider if it is followed by the ID of that spider
-  job      All jobs or a job if the ID of that job follows
-  cronjob  All cronjobs or a cronjob if it is followed by the ID of that cronjob 
 ```
 
 ## Installation
