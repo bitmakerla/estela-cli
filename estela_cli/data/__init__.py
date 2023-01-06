@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Returns all the data of a job and saves it in a json file")
+@click.group(short_help="Retrieve data from a given job and save it locally")
 def estela_command():
     pass
 

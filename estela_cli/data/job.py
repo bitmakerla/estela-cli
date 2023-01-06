@@ -1,12 +1,19 @@
+import time
+
 from email.policy import default
 import click
 from click import ClickException
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings, get_project_path, save_data
-from estela_cli.templates import OK_EMOJI, BAD_EMOJI
+from estela_cli.utils import (
+    get_estela_settings,
+    get_project_path,
+    save_data,
+    save_chunk_data,
+)
+from estela_cli.templates import OK_EMOJI, BAD_EMOJI, CLOCK_EMOJI
 
-SHORT_HELP = "Get data from a job"
+SHORT_HELP = "Retrieve data from a job"
 ALLOWED_FORMATS = ["json", "csv"]
 
 
@@ -26,7 +33,7 @@ def estela_command(
     pid,
     format,
 ):
-    """Get data from a job
+    """Retrieve all data from a given job
 
     \b
     SID is the spider's sid
@@ -44,10 +51,35 @@ def estela_command(
             raise click.ClickException(
                 "No active project in the current directory. Please specify the PID."
             )
+
+    tmp_filename = ".{}-{}-{}-tmp".format(jid, pid, time.time())
+    filename = "{}-{}.{}".format(jid, pid, format)
     try:
-        response = estela_client.get_spider_job_data(pid, sid, jid, format)
-        click.echo("{} Data retrieved succesfully.".format(OK_EMOJI))
-    except Exception as ex:
-        raise click.ClickException("{} Cannot get data".format(BAD_EMOJI))
-    save_data("{}-{}.{}".format(jid, pid, format), response)
-    click.echo("{} Data saved succesfully.".format(OK_EMOJI))
+        response = estela_client.get_spider_job_data(pid, sid, jid)
+        with click.progressbar(
+            length=int(response["count"]),
+            label="{} Downloading job data".format(CLOCK_EMOJI),
+            show_eta=True,
+            show_percent=True,
+            show_pos=True,
+        ) as progress_bar:
+            next_chunk = None
+            while True:
+                response = estela_client.get_spider_job_data(pid, sid, jid, next_chunk)
+                chunk = response.get("results")
+                save_chunk_data(tmp_filename, chunk)
+                progress_bar.update(len(chunk))
+                next_chunk = response.get("next_chunk")
+                if next_chunk is None:
+                    break
+        click.echo("{} Data downloaded succesfully.".format(OK_EMOJI))
+    except:
+        raise click.ClickException(
+            "{} Could not download the job data".format(BAD_EMOJI)
+        )
+
+    try:
+        save_data(filename, tmp_filename)
+        click.echo("{} Data saved succesfully.".format(OK_EMOJI))
+    except:
+        raise click.ClickException("{} Could not save the job data".format(BAD_EMOJI))
