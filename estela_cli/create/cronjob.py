@@ -3,11 +3,11 @@ import click
 from estela_cli.login import login
 from estela_cli.utils import (
     get_estela_settings,
-    validate_key_value_format,
     set_tag_format,
+    validate_key_value_format,
+    validate_limit,
     validate_positive,
 )
-
 
 SHORT_HELP = "Create a new cronjob"
 
@@ -33,6 +33,13 @@ SHORT_HELP = "Create a new cronjob"
     help="Set spider cronjob environment variable NAME=VALUE (may be repeated)",
 )
 @click.option(
+    "--memory",
+    "-m",
+    type=click.STRING,
+    callback=validate_limit,
+    help="Set spider job memory limit (e.g. 256Mi, 1Gi).",
+)
+@click.option(
     "--tag",
     "-t",
     multiple=True,
@@ -47,7 +54,7 @@ SHORT_HELP = "Create a new cronjob"
     callback=validate_positive,
     help="Set spider cronjob data expiry days",
 )
-def estela_command(sid, pid, schedule, arg, env, tag, day):
+def estela_command(sid, pid, schedule, arg, env, memory, tag, day):
     """Create a new cronjob
 
     \b
@@ -67,7 +74,7 @@ def estela_command(sid, pid, schedule, arg, env, tag, day):
             )
     try:
         response = estela_client.create_spider_cronjob(
-            pid, sid, schedule, arg, env, tag, day
+            pid, sid, schedule, arg, env, memory, tag, day
         )
         click.echo("cronjob/{} created.".format(response["name"]))
     except Exception as ex:

@@ -207,7 +207,7 @@ class EstelaClient(EstelaSimpleClient):
         return response.json()
 
     def create_spider_cronjob(
-        self, pid, sid, schedule="", args=[], env_vars=[], tags=[], day=None
+        self, pid, sid, schedule="", args=[], env_vars=[], memory=None, tags=[], day=None
     ):
         endpoint = "projects/{}/spiders/{}/cronjobs".format(pid, sid)
         data = {
@@ -219,6 +219,8 @@ class EstelaClient(EstelaSimpleClient):
         }
         if day:
             data["data_expiry_days"] = f"0/{day}"
+        if memory:
+            data["limits"] = {"memory": memory}
 
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
