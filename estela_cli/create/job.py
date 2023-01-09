@@ -3,11 +3,11 @@ import click
 from estela_cli.login import login
 from estela_cli.utils import (
     get_estela_settings,
-    validate_key_value_format,
     set_tag_format,
+    validate_key_value_format,
+    validate_limit,
     validate_positive,
 )
-
 
 SHORT_HELP = "Create a new job"
 
@@ -32,6 +32,13 @@ SHORT_HELP = "Create a new job"
     help="Set spider job environment variable NAME=VALUE (may be repeated)",
 )
 @click.option(
+    "--memory",
+    "-m",
+    type=click.STRING,
+    callback=validate_limit,
+    help="Set spider job memory limit (e.g. 256Mi, 1Gi).",
+)
+@click.option(
     "--tag",
     "-t",
     multiple=True,
@@ -46,7 +53,7 @@ SHORT_HELP = "Create a new job"
     callback=validate_positive,
     help="Set spider job data expiry days",
 )
-def estela_command(sid, pid, arg, env, tag, day):
+def estela_command(sid, pid, arg, env, memory, tag, day):
     """Create a new job
 
     \b
@@ -64,7 +71,7 @@ def estela_command(sid, pid, arg, env, tag, day):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        response = estela_client.create_spider_job(pid, sid, arg, env, tag, day)
+        response = estela_client.create_spider_job(pid, sid, arg, env, memory, tag, day)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:
         raise click.ClickException("Cannot create the job for given SID and PID.")

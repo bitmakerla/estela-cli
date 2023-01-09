@@ -181,7 +181,9 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[], day=None):
+    def create_spider_job(
+        self, pid, sid, args=[], env_vars=[], memory=None, tags=[], day=None
+    ):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
         data = {
             "args": args,
@@ -191,6 +193,8 @@ class EstelaClient(EstelaSimpleClient):
         }
         if day:
             data["data_expiry_days"] = f"{date.today() + timedelta(days=day)}"
+        if memory:
+            data["limits"] = {"memory": memory}
 
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
