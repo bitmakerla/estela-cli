@@ -62,9 +62,10 @@ def estela_command(sid, pid, tag):
             format_tags(cronjob["ctags"]),
             format_key_value_pairs(cronjob["cargs"]),
             format_key_value_pairs(cronjob["cenv_vars"]),
+            cronjob["limits"].get("memory", 0),
         ]
         for cronjob in cronjobs
     ]
 
-    headers = ["CJID", "STATUS", "SCHEDULE", "TAGS", "ARGS", "ENV VARS"]
+    headers = ["CJID", "STATUS", "SCHEDULE", "TAGS", "ARGS", "ENV VARS", "MEMORY_LIMIT"]
     click.echo(tabulate(cronjobs, headers, numalign="left", tablefmt="plain"))
