@@ -26,7 +26,7 @@ class EstelaSimpleClient:
         return "{}/{}".format(self.api_base, endpoint)
 
     def get_default_headers(self):
-        headers = {"User-Agent": "estela-cli/0.1"}
+        headers = {"User-Agent": "estela-cli/0.2"}
         if self.token:
             headers["Authorization"] = "Token {}".format(self.token)
         return headers

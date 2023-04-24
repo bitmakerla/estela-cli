@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-__version__ = "0.1"
+__version__ = "0.2"
 
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
