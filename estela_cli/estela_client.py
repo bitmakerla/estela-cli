@@ -2,6 +2,8 @@ from datetime import date, timedelta
 
 import requests
 
+from estela_cli import __version__
+
 
 class EstelaSimpleClient:
     token = None
@@ -26,7 +28,7 @@ class EstelaSimpleClient:
         return "{}/{}".format(self.api_base, endpoint)
 
     def get_default_headers(self):
-        headers = {"User-Agent": "estela-cli/0.2"}
+        headers = {"User-Agent": f"estela-cli/{__version__}"}
         if self.token:
             headers["Authorization"] = "Token {}".format(self.token)
         return headers
