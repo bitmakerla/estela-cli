@@ -125,9 +125,10 @@ def save_data(filename, tmp_filename, format):
             data = json.load(F)
         with open(filename, "w", encoding="utf-8") as F:
             keys = data[0].keys()
-            writer = csv.DictWriter(F, keys)
+            writer = csv.DictWriter(F, fieldnames=keys)
             writer.writeheader()
-            writer.writerows(data)
+            for row in data:
+                writer.writerow({k: v for k, v in row.items() if k in keys})
             os.remove(tmp_filename)
 
 
