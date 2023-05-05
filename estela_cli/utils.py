@@ -109,7 +109,7 @@ def save_chunk_data(filename, data):
             F.write(",")
 
 
-def save_data(filename, tmp_filename):
+def save_data(filename, tmp_filename, format):
     project_path = get_project_path()
     filename = os.path.join(project_path, DATA_DIR, filename)
     tmp_filename = os.path.join(project_path, DATA_DIR, tmp_filename)
@@ -118,9 +118,9 @@ def save_data(filename, tmp_filename):
         F.truncate()
         F.write(b"]\n")
 
-    if "json" in filename:
+    if format == "json":
         os.rename(tmp_filename, filename)
-    elif "csv" in filename:
+    elif format == "csv":
         with open(tmp_filename, "r", encoding="utf-8") as F:
             data = json.load(F)
         with open(filename, "w", encoding="utf-8") as F:

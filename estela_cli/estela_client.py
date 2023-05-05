@@ -171,9 +171,9 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def get_spider_job_data(self, pid, sid, jid, last_chunk=None):
-        endpoint = "projects/{}/spiders/{}/jobs/{}/data?mode=paged".format(
-            pid, sid, jid
+    def get_spider_job_data(self, pid, sid, jid, datatype, last_chunk=None):
+        endpoint = "projects/{}/spiders/{}/jobs/{}/data?type={}".format(
+            pid, sid, jid, datatype
         )
         if last_chunk:
             endpoint += "&current_chunk={}".format(last_chunk)
