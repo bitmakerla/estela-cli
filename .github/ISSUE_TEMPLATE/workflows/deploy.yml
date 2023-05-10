@@ -3,11 +3,8 @@ name: Deploy CLI
 on:
   push:
 
-env:
-  API_DIRECTORY: estela-api
-
 jobs:
-  environment:
+  check_change:
     runs-on: ubuntu-latest
     name: Check version change
     outputs:
@@ -28,7 +25,7 @@ jobs:
   build_deploy:
     runs-on: ubuntu-latest
     name: Create
-    needs: environment
+    needs: check_change
     if: ${{ needs.job1.outputs.variable-salida == 'true' }}
     steps:
       - name: Checkout
