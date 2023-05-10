@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and upload package
         env:
-          TWINE_USERNAME: __token__
+          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python setup.py sdist bdist_wheel
