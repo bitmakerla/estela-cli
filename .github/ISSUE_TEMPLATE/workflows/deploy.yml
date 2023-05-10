@@ -1,0 +1,43 @@
+name: Deploy CLI
+
+on:
+  push:
+
+env:
+  API_DIRECTORY: estela-api
+
+jobs:
+  environment:
+    runs-on: ubuntu-latest
+    name: Check version change
+    outputs:
+      new_version: ${{ steps.is-changed.outputs.version_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Check changes in .bumpversion.cfg
+        id: is-changed
+        run: |
+          # Comprobamos si el archivo .bumpversion.cfg ha sido modificado
+          if git diff --unified=0 HEAD^ HEAD | grep -E '^\+.*current_version'; then
+            echo "version_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "version_changed=false" >> "$GITHUB_OUTPUT"
+
+  build_deploy:
+    runs-on: ubuntu-latest
+    name: Create
+    needs: environment
+    if: ${{ needs.job1.outputs.variable-salida == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build and upload package
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
