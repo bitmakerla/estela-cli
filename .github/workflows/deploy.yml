@@ -12,16 +12,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          repository: bitmakerla/estela-cli
+          fetch-depth: '10'
+
+      - name: Get history
+        run: git log
 
       - name: Check changes in .bumpversion.cfg
         id: is-changed
         run: |
-          # Comprobamos si el archivo .bumpversion.cfg ha sido modificado
-          if git diff --unified=0 HEAD^ HEAD | grep -E '^\+.*current_version'; then
-            echo "version_changed=true" >> "$GITHUB_OUTPUT"
+          git fetch
+          if git diff --unified=0 '${{ github.event.before }}' '${{ github.event.after }}'| grep -E '^\+.*current_version'; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT;
           else
-            echo "version_changed=false" >> "$GITHUB_OUTPUT"
-
+            echo "version_changed=false" >> $GITHUB_OUTPUT;
+          fi
   build_deploy:
     runs-on: ubuntu-latest
     name: Create
@@ -36,5 +42,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
+          pip install -r requirements/dev.txt
+          pip install twine
           python setup.py sdist bdist_wheel
           twine upload dist/*
