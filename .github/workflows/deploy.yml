@@ -2,6 +2,10 @@ name: Deploy CLI
 
 on:
   push:
+    branches:
+      - master
+    paths:
+      - .bumpversion.cfg
 
 jobs:
   check_change:
