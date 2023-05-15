@@ -1,0 +1,52 @@
+name: Deploy CLI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .bumpversion.cfg
+
+jobs:
+  check_change:
+    runs-on: ubuntu-latest
+    name: Check version change
+    outputs:
+      version_changed: ${{ steps.is-changed.outputs.version_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          repository: bitmakerla/estela-cli
+          fetch-depth: '10'
+
+      - name: Get history
+        run: git log
+
+      - name: Check changes in .bumpversion.cfg
+        id: is-changed
+        run: |
+          git fetch
+          if git diff --unified=0 '${{ github.event.before }}' '${{ github.event.after }}'| grep -E '^\+.*current_version'; then
+            echo "version_changed=true" >> $GITHUB_OUTPUT;
+          else
+            echo "version_changed=false" >> $GITHUB_OUTPUT;
+          fi
+  build_deploy:
+    runs-on: ubuntu-latest
+    name: Create
+    needs: check_change
+    if: ${{ needs.check_change.outputs.version_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build and upload package
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USER }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          pip install -r requirements/base.txt
+          pip install twine
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
