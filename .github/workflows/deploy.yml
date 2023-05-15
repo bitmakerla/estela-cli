@@ -42,7 +42,7 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USER }}
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          pip install -r requirements/dev.txt
+          pip install -r requirements/base.txt
           pip install twine
           python setup.py sdist bdist_wheel
           twine upload dist/*
