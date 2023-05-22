@@ -8,7 +8,7 @@ from estela_cli.utils import get_estela_settings, save_chunk_data, save_data
 
 SHORT_HELP = "Retrieve data from a job"
 ALLOWED_DATA_TYPES = ["items", "requests", "logs", "stats"]
-ALLOWED_DATA_FORMATS = ["json", "csv"]
+ALLOWED_DATA_FORMATS = ["json", "csv", "tsv"]
 
 
 @click.command(short_help=SHORT_HELP)
@@ -67,7 +67,9 @@ def estela_command(
         ) as progress_bar:
             next_chunk = None
             while True:
-                response = estela_client.get_spider_job_data(pid, sid, jid, datatype, next_chunk)
+                response = estela_client.get_spider_job_data(
+                    pid, sid, jid, datatype, next_chunk
+                )
                 chunk = response.get("results")
                 save_chunk_data(tmp_filename, chunk)
                 progress_bar.update(len(chunk))

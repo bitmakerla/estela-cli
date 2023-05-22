@@ -120,12 +120,13 @@ def save_data(filename, tmp_filename, format):
 
     if format == "json":
         os.rename(tmp_filename, filename)
-    elif format == "csv":
+    elif format == "csv" or format == "tsv":
+        delimiter = "," if format == "csv" else "\t"
         with open(tmp_filename, "r", encoding="utf-8") as F:
             data = json.load(F)
         with open(filename, "w", encoding="utf-8") as F:
             keys = data[0].keys()
-            writer = csv.DictWriter(F, fieldnames=keys)
+            writer = csv.DictWriter(F, delimiter=delimiter, fieldnames=keys)
             writer.writeheader()
             for row in data:
                 writer.writerow({k: v for k, v in row.items() if k in keys})
