@@ -22,9 +22,8 @@ from estela_cli.templates import (
 SHORT_HELP = "Deploy Scrapy project to estela API"
 
 
-def zip_project(pid, project_path):
+def zip_project(pid, project_path, estela_settings):
     relroot = os.path.abspath(os.path.join(project_path, os.pardir))
-    estela_settings = get_estela_settings()
     archives_to_ignore = estela_settings["deploy"]["ignore"]
     with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(project_path):
@@ -88,7 +87,7 @@ def estela_command():
         p_settings["entrypoint"],
     )
 
-    zip_project(pid, project_path)
+    zip_project(pid, project_path, estela_settings)
 
     response = {}
     try:

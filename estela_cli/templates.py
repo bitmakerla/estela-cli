@@ -43,12 +43,12 @@ ESTELA_YAML_NAME = "estela.yaml"
 
 ESTELA_YAML = """\
 project:
-  pid: $project_pid
-  python: $python_version
-  requirements: $requirements_path
-  entrypoint: $entrypoint
+  pid: "$project_pid"
+  python: "$python_version"
+  requirements: "$requirements_path"
+  entrypoint: "$entrypoint"
 deploy:
-  ignore: [$project_data_path]
+  ignore: ["$project_data_path"]
 """
 
 # General templates
