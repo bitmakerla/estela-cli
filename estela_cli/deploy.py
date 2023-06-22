@@ -17,26 +17,34 @@ from estela_cli.templates import (
     DOCKERFILE,
     DOCKERFILE_NAME,
 )
+import logging
 
 
-SHORT_HELP = "Deploy Scrapy project to estela API"
+SHORT_HELP = "Deploy Scrapy project to estela APIXD"
 
 
-def zip_project(pid, project_path, estela_settings):
+def zip_project(pid, project_path, estela_settings, verbose=False):
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
     relroot = os.path.abspath(os.path.join(project_path, os.pardir))
     archives_to_ignore = estela_settings["deploy"]["ignore"]
     with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
         for root, dirs, files in os.walk(project_path):
             # ignoring dir with data from jobs
             rel_root = root.replace("{}/".format(project_path), "")
+            logging.debug(f"relative root: {rel_root}, absolute root: {root}")
             if _in(rel_root, archives_to_ignore):
+                logging.debug("ignore")
                 continue
             # add directory (needed for empty dirs)
             zip.write(root, os.path.relpath(root, relroot))
+            logging.debug(f"files: {' '.join(files)}")
             for file in files:
+                logging.debug(f"- {file}")
                 filename = os.path.join(root, file)
                 arcname = os.path.join(os.path.relpath(root, relroot), file)
                 zip.write(filename, arcname)
+    logging.basicConfig(level=logging.WARNING)
 
 
 def update_dockerfile(requirements_path, python_version, entrypoint):
@@ -67,7 +75,8 @@ def update_dockerfile(requirements_path, python_version, entrypoint):
 
 
 @click.command(short_help=SHORT_HELP)
-def estela_command():
+@click.option('--verbose', is_flag=True, help='Active debug logs.')
+def estela_command(verbose):
     estela_client = login()
     estela_settings = get_estela_settings()
     project_path = get_project_path()
@@ -87,7 +96,7 @@ def estela_command():
         p_settings["entrypoint"],
     )
 
-    zip_project(pid, project_path, estela_settings)
+    zip_project(pid, project_path, estela_settings, verbose)
 
     response = {}
     try:
