@@ -16,11 +16,13 @@ DATA_DIR = "project_data"
 
 DOCKER_APP_DIR = "/usr/src/app"
 
-DOCKER_DEFAULT_PYTHON_VERSION = "3.6"
+DOCKER_DEFAULT_PYTHON_VERSION = "3.8"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
 
 DOCKER_DEFAULT_ENTRYPOINT = "git+https://github.com/bitmakerla/estela-entrypoint.git"
+
+DOCKER_REQUESTS_ENTRYPOINT = "git+https://github.com/bitmakerla/estela-requests-entrypoint"
 
 DOCKERFILE_NAME = "Dockerfile-estela"
 

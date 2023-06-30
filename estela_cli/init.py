@@ -11,6 +11,7 @@ from estela_cli.utils import (
 from estela_cli.templates import (
     DATA_DIR,
     DOCKER_DEFAULT_ENTRYPOINT,
+    DOCKER_REQUESTS_ENTRYPOINT,
     DOCKERFILE,
     DOCKERFILE_NAME,
     ESTELA_YAML,
@@ -21,10 +22,10 @@ from estela_cli.templates import (
 )
 
 
-SHORT_HELP = "Initialize estela project for existing scrapy project"
+SHORT_HELP = "Initialize estela project for existing web scraping project"
 
 
-def gen_estela_yaml(estela_client, pid=None):
+def gen_estela_yaml(estela_client, entrypoint_path, pid=None):
     estela_yaml_path = get_estela_yaml_path()
 
     if os.path.exists(estela_yaml_path):
@@ -46,7 +47,7 @@ def gen_estela_yaml(estela_client, pid=None):
         "project_data_path": DATA_DIR,
         "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
         "requirements_path": DOCKER_DEFAULT_REQUIREMENTS,
-        "entrypoint": DOCKER_DEFAULT_ENTRYPOINT,
+        "entrypoint": entrypoint_path,
     }
 
     result = template.substitute(values)
@@ -56,7 +57,7 @@ def gen_estela_yaml(estela_client, pid=None):
         click.echo("{} file created successfully.".format(ESTELA_YAML_NAME))
 
 
-def gen_dockerfile(requirements_path):
+def gen_dockerfile(requirements_path, entrypoint_path):
     dockerfile_path = get_estela_dockerfile_path()
 
     if os.path.exists(dockerfile_path):
@@ -74,7 +75,7 @@ def gen_dockerfile(requirements_path):
     values = {
         "python_version": DOCKER_DEFAULT_PYTHON_VERSION,
         "requirements_path": requirements_path,
-        "entrypoint": DOCKER_DEFAULT_ENTRYPOINT,
+        "entrypoint": entrypoint_path,
     }
     result = template.substitute(values)
 
@@ -86,21 +87,31 @@ def gen_dockerfile(requirements_path):
 @click.command(short_help=SHORT_HELP)
 @click.argument("pid", required=True)
 @click.option(
+    "-p",
+    "--platform",
+    default="scrapy",
+    help="Platform to use, it can be 'scrapy' or 'requests'",
+    show_default=True,
+)
+@click.option(
     "-r",
     "--requirements",
     default=DOCKER_DEFAULT_REQUIREMENTS,
     help="Relative path to requirements inside your project",
     show_default=True,
 )
-def estela_command(pid, requirements):
+def estela_command(pid, platform, requirements):
     """Initialize estela project
 
     PID is the project's pid
     """
-
+    platform_map = {
+        "scrapy": DOCKER_DEFAULT_ENTRYPOINT,
+        "requests": DOCKER_REQUESTS_ENTRYPOINT,
+    }
     if not os.path.exists(ESTELA_DIR):
         os.makedirs(ESTELA_DIR)
-
     estela_client = login()
-    gen_estela_yaml(estela_client, pid)
-    gen_dockerfile(requirements)
+    gen_estela_yaml(estela_client, platform_map[platform], pid)
+    gen_dockerfile(requirements, platform_map[platform])
+    click.echo(f"{pid} project is activated as a {platform.capitalize()} project.")
