@@ -114,4 +114,4 @@ def estela_command(pid, platform, requirements):
     estela_client = login()
     gen_estela_yaml(estela_client, platform_map[platform], pid)
     gen_dockerfile(requirements, platform_map[platform])
-    click.echo(f"{pid} project is activated as a {platform.capitalize()} project.")
+    click.echo(f"{pid} project is initialized as a {platform.capitalize()} project.")
