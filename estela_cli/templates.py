@@ -16,7 +16,7 @@ DATA_DIR = "project_data"
 
 DOCKER_APP_DIR = "/usr/src/app"
 
-DOCKER_DEFAULT_PYTHON_VERSION = "3.8"
+DOCKER_DEFAULT_PYTHON_VERSION = "3.9"
 
 DOCKER_DEFAULT_REQUIREMENTS = "requirements.txt"
 
