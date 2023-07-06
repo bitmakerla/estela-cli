@@ -22,7 +22,7 @@ from estela_cli.templates import (
 )
 
 
-SHORT_HELP = "Initialize estela project for existing web scraping project"
+SHORT_HELP = "Initialize a estela project for a existing web scraping project"
 
 
 def gen_estela_yaml(estela_client, entrypoint_path, pid=None):
