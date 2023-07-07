@@ -21,8 +21,8 @@ from estela_cli.templates import (
     ESTELA_DIR,
 )
 
-
-SHORT_HELP = "Initialize a estela project for a existing web scraping project"
+ALLOWED_PLATFORMS = ["scrapy", "requests"]
+SHORT_HELP = "Initialize estela project for existing web scraping project"
 
 
 def gen_estela_yaml(estela_client, entrypoint_path, pid=None):
@@ -89,6 +89,7 @@ def gen_dockerfile(requirements_path, entrypoint_path):
 @click.option(
     "-p",
     "--platform",
+    type=click.Choice(ALLOWED_PLATFORMS, case_sensitive=False),
     default="scrapy",
     help="Platform to use, it can be 'scrapy' or 'requests'",
     show_default=True,
