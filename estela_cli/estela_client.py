@@ -117,6 +117,15 @@ class EstelaClient(EstelaSimpleClient):
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
         return response.json()
+    
+    def update_project(self, pid, **kwargs):
+        endpoint = "projects/{}".format(pid)
+        data = {
+            **kwargs,
+        }
+        response = self.put(endpoint, data=data)
+        self.check_status(response, 200)
+        return response.json()
 
     def delete_project(self, pid):
         endpoint = "projects/{}".format(pid)
