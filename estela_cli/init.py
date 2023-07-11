@@ -113,7 +113,11 @@ def estela_command(pid, platform, requirements):
     if not os.path.exists(ESTELA_DIR):
         os.makedirs(ESTELA_DIR)
     estela_client = login()
-    estela_client.update_project(pid, framework=platform.upper(), action="update")
+    try:
+        response = estela_client.update_project(pid, framework=platform.upper(), action="update")
+    except Exception as e:
+        raise click.ClickException("Could not update framework project: %s" % str(e))
+    finally:
+        click.echo(f"{pid} is initialized as a {platform.capitalize()} project.")
     gen_estela_yaml(estela_client, platform_map[platform], pid)
     gen_dockerfile(requirements, platform_map[platform])
-    click.echo(f"{pid} project is initialized as a {platform.capitalize()} project.")
