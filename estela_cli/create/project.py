@@ -19,9 +19,8 @@ def estela_command(name):
         response = estela_client.create_project(name)
         click.echo("project/{} created.".format(name))
         click.echo(
-            "Hint: Run 'estela init {}' to activate this project".format(
-                response["pid"]
-            )
+            f"Hint: Use 'estela init {response['pid']}' to initialize a Scrapy project.\n"
+            f"Hint: Use 'estela init {response['pid']} -p requests' to initialize a Requests project."
         )
     except Exception as ex:
         raise click.ClickException(str(ex))
