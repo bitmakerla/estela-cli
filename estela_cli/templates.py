@@ -50,7 +50,7 @@ project:
   requirements: "$requirements_path"
   entrypoint: "$entrypoint"
 deploy:
-  ignore: ["$project_data_path"]
+  ignore: ["$project_data_path",".git"]
 """
 
 # General templates

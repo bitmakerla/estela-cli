@@ -17,6 +17,7 @@ from estela_cli.templates import (
     DOCKERFILE,
     DOCKERFILE_NAME,
 )
+import logging
 
 
 SHORT_HELP = "Deploy Scrapy project to estela API"
@@ -67,33 +68,49 @@ def update_dockerfile(requirements_path, python_version, entrypoint):
 
 
 @click.command(short_help=SHORT_HELP)
-def estela_command():
+@click.option('--verbose', is_flag=True, help='Show debug logs.')
+def estela_command(verbose):
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+
     estela_client = login()
+    logging.debug(f"Successfully logged in to {estela_client.host}")
     estela_settings = get_estela_settings()
+    logging.debug(f"Successfully read estela settings: {estela_settings}")
     project_path = get_project_path()
     p_settings = estela_settings["project"]
     pid = p_settings["pid"]
+    logging.debug(f"Project path: {project_path}")
 
     try:
+        logging.debug(f"Verifying project exists...")
         estela_client.get_project(pid)
+        logging.debug(f"Verified project exists.")
     except:
         raise click.ClickException(
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
+    logging.debug(f"Updating Dockerfile...")
     update_dockerfile(
         p_settings["requirements"],
         p_settings["python"],
         p_settings["entrypoint"],
     )
+    logging.debug(f"Successfully updated Dockerfile.")
 
+    logging.debug(f"Zipping project for upload to estela...")
     zip_project(pid, project_path, estela_settings)
+    logging.debug(f"Successfully zipped the project.")
 
     response = {}
     try:
+        logging.debug(f"Uploading project...")
         response = estela_client.upload_project(pid, open("{}.zip".format(pid), "rb"))
-    except:
+        logging.debug(f"Successfully uploaded the project.")
+    except Exception as e:
         os.remove("{}.zip".format(pid))
+        logging.debug(str(e))
         raise click.ClickException("A problem occurred while uploading the project.")
 
     click.echo(
