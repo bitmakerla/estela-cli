@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 import csv
 import json
@@ -147,6 +148,16 @@ def validate_key_value_format(ctx, param, value):
 def validate_positive(ctx, param, value):
     if value is not None and value <= 0:
         raise click.BadParameter("must be a positive integer.")
+    return value
+
+
+def validate_limit(ctx, param, value):
+    if value is not None:
+        match = re.match(r"^(\d+)(Mi|Gi)$", value)
+        if not match:
+            raise click.BadParameter(
+                "must be in a valid limit format (e.g. 256Mi, 1Gi)."
+            )
     return value
 
 
