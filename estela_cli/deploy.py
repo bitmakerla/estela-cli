@@ -1,21 +1,17 @@
 import os
 import click
 
-from string import Template
 from zipfile import ZipFile, ZIP_DEFLATED
 from estela_cli.utils import (
     get_project_path,
     get_estela_settings,
     _in,
-    get_estela_dockerfile_path,
 )
 from estela_cli.login import login
 from estela_cli.templates import (
     OK_EMOJI,
     ESTELA_DIR,
     ESTELA_YAML_NAME,
-    DOCKERFILE,
-    DOCKERFILE_NAME,
 )
 import logging
 
@@ -40,33 +36,15 @@ def zip_project(pid, project_path, estela_settings):
                 zip.write(filename, arcname)
 
 
-def update_dockerfile(requirements_path, python_version, entrypoint):
-    dockerfile_path = get_estela_dockerfile_path()
-
+def verify_requrements(requirements_path):
     project_path = get_project_path()
     requirements_local_path = os.path.join(project_path, requirements_path)
     if not os.path.exists(requirements_local_path):
         raise click.ClickException("The requirements file does not exist.")
 
-    template = Template(DOCKERFILE)
-    values = {
-        "python_version": python_version,
-        "requirements_path": requirements_path,
-        "entrypoint": entrypoint,
-    }
-    result = template.substitute(values)
-    with open(dockerfile_path, "r") as dock:
-        if result == dock.read():
-            click.echo(
-                "{}/{} not changes to update.".format(ESTELA_DIR, DOCKERFILE_NAME)
-            )
-            return
-
-    click.echo("{}/{} updated successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
-
 
 @click.command(short_help=SHORT_HELP)
-@click.option('--verbose', is_flag=True, help='Show debug logs.')
+@click.option("--verbose", is_flag=True, help="Show debug logs.")
 def estela_command(verbose):
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
@@ -89,13 +67,9 @@ def estela_command(verbose):
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
-    logging.debug(f"Updating Dockerfile...")
-    update_dockerfile(
-        p_settings["requirements"],
-        p_settings["python"],
-        p_settings["entrypoint"],
-    )
-    logging.debug(f"Successfully updated Dockerfile.")
+    logging.debug(f"Verifying requirements...")
+    verify_requrements(p_settings["requirements"])
+    logging.debug(f"Successfully verified requirements.")
 
     logging.debug(f"Zipping project for upload to estela...")
     zip_project(pid, project_path, estela_settings)
