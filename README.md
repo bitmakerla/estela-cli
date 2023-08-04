@@ -1,7 +1,7 @@
 <h1 align="center"> estela CLI </h1>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![version](https://img.shields.io/badge/version-0.2.5-blue)](https://github.com/bitmakerla/estela-cli)
+[![version](https://img.shields.io/badge/version-0.2.6-blue)](https://github.com/bitmakerla/estela-cli)
 [![python-version](https://img.shields.io/badge/python-v3.10-orange)](https://www.python.org)
 
 
