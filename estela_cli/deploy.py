@@ -62,9 +62,7 @@ def update_dockerfile(requirements_path, python_version, entrypoint):
             )
             return
 
-    with open(dockerfile_path, "w+") as dockerfile:
-        dockerfile.write(result)
-        click.echo("{}/{} updated successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
+    click.echo("{}/{} updated successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
 
 
 @click.command(short_help=SHORT_HELP)
