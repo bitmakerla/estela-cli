@@ -183,9 +183,7 @@ class EstelaClient(EstelaSimpleClient):
                     "Content-Type": m.content_type,
                 }
                 response = self.multipart_post(
-                    endpoint,
-                    data=m,
-                    extra_headers=extra_headers
+                    endpoint, data=m, extra_headers=extra_headers
                 )
         self.check_status(response, 201)
         return response.json()

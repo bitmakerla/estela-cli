@@ -68,7 +68,7 @@ def update_dockerfile(requirements_path, python_version, entrypoint):
 
 
 @click.command(short_help=SHORT_HELP)
-@click.option('--verbose', is_flag=True, help='Show debug logs.')
+@click.option("--verbose", is_flag=True, help="Show debug logs.")
 def estela_command(verbose):
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
