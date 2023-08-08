@@ -174,16 +174,17 @@ class EstelaClient(EstelaSimpleClient):
                 fields = {
                     "project_zip": (filename, f),
                 }
-                e = MultipartEncoder(fields=fields)
-                m = MultipartEncoderMonitor(
-                    e, lambda monitor: bar.update(monitor.bytes_read - bar.n)
+                encoder = MultipartEncoder(fields=fields)
+                monitor = MultipartEncoderMonitor(
+                    encoder,
+                    lambda monitoring: bar.update(monitoring.bytes_read - bar.n),
                 )
                 endpoint = "projects/{}/deploys".format(pid)
                 extra_headers = {
-                    "Content-Type": m.content_type,
+                    "Content-Type": monitor.content_type,
                 }
                 response = self.multipart_post(
-                    endpoint, data=m, extra_headers=extra_headers
+                    endpoint, data=monitor, extra_headers=extra_headers
                 )
         self.check_status(response, 201)
         return response.json()
