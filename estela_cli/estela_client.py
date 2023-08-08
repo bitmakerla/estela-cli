@@ -1,4 +1,7 @@
 from datetime import date, timedelta
+from pathlib import Path
+from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+from tqdm import tqdm
 
 import requests
 
@@ -47,6 +50,18 @@ class EstelaSimpleClient:
             headers=headers,
             params=params,
             files=files,
+        )
+
+    def multipart_post(self, endpoint, data=None, extra_headers=None):
+        if data is None:
+            data = {}
+        headers = self.get_default_headers()
+        if extra_headers:
+            headers.update(extra_headers)
+        return requests.post(
+            self.url_for(endpoint),
+            data=data,
+            headers=headers,
         )
 
     def get(self, endpoint, params=None, paginated=False):
@@ -117,7 +132,7 @@ class EstelaClient(EstelaSimpleClient):
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
         return response.json()
-    
+
     def update_project(self, pid, **kwargs):
         endpoint = "projects/{}".format(pid)
         data = {
@@ -143,10 +158,35 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def upload_project(self, pid, project_zip):
-        endpoint = "projects/{}/deploys".format(pid)
-        files = {"project_zip": project_zip}
-        response = self.post(endpoint, files=files)
+    def upload_project(self, pid, filepath):
+        path = Path(filepath)
+        total_size = path.stat().st_size
+        filename = path.name
+
+        with tqdm(
+            desc=filename,
+            total=total_size,
+            unit="B",
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as bar:
+            with open(filepath, "rb") as f:
+                fields = {
+                    "project_zip": (filename, f),
+                }
+                e = MultipartEncoder(fields=fields)
+                m = MultipartEncoderMonitor(
+                    e, lambda monitor: bar.update(monitor.bytes_read - bar.n)
+                )
+                endpoint = "projects/{}/deploys".format(pid)
+                extra_headers = {
+                    "Content-Type": m.content_type,
+                }
+                response = self.multipart_post(
+                    endpoint,
+                    data=m,
+                    extra_headers=extra_headers
+                )
         self.check_status(response, 201)
         return response.json()
 

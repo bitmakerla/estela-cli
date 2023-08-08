@@ -106,7 +106,7 @@ def estela_command(verbose):
     response = {}
     try:
         logging.debug(f"Uploading project...")
-        response = estela_client.upload_project(pid, open("{}.zip".format(pid), "rb"))
+        response = estela_client.upload_project(pid, "{}.zip".format(pid))
         logging.debug(f"Successfully uploaded the project.")
     except Exception as e:
         os.remove("{}.zip".format(pid))
