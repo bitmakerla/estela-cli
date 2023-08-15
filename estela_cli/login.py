@@ -95,7 +95,7 @@ def login(username=None, password=None, host=None):
     return estela_client
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="login", short_help=SHORT_HELP)
 @click.option(
     "--username",
     help="Username for login. If username is not given, it will be asked",

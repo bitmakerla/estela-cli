@@ -57,10 +57,8 @@ def verify_requrements(requirements_path):
         raise click.ClickException("The requirements file does not exist.")
 
 
-@click.command(short_help=SHORT_HELP)
-@click.option(
-    "-v", "--verbose", count=True, help="Increase verbosity level (e.g., -v, -vv)."
-)
+@click.command(name="deploy", short_help=SHORT_HELP)
+@click.option('--verbose', is_flag=True, help='Show debug logs.')
 def estela_command(verbose):
     if verbose == 1:
         logging.basicConfig(level=logging.DEBUG)

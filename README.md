@@ -59,3 +59,12 @@ $ python tests.py
 $ pip install -r requirements/dev.txt
 $ black .
 ```
+
+## Documentation
+
+First install estela CLI.
+
+```bash
+$ pip install -r requirements/dev.txt
+$ mkdocs serve
+``````

@@ -11,7 +11,7 @@ ALLOWED_DATA_TYPES = ["items", "requests", "logs", "stats"]
 ALLOWED_DATA_FORMATS = ["json", "csv", "tsv"]
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="job", short_help=SHORT_HELP)
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)

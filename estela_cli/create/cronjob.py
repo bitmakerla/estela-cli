@@ -12,7 +12,7 @@ from estela_cli.utils import (
 SHORT_HELP = "Create a new cronjob"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="cronjob", short_help=SHORT_HELP)
 @click.argument("schedule", required=True, type=click.STRING)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)

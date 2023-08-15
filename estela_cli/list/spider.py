@@ -8,7 +8,7 @@ from estela_cli.utils import get_estela_settings
 SHORT_HELP = "List a project's spiders"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="spider", short_help=SHORT_HELP)
 @click.argument("pid", required=False)
 def estela_command(pid):
     """List spiders of a given project

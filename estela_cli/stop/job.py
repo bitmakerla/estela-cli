@@ -6,7 +6,7 @@ from estela_cli.utils import get_estela_settings
 SHORT_HELP = "Stop an active job"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="job", short_help=SHORT_HELP)
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)

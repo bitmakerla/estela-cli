@@ -6,7 +6,7 @@ from estela_cli.login import login
 SHORT_HELP = "Create a new project"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="project", short_help=SHORT_HELP)
 @click.argument("name", required=True)
 def estela_command(name):
     """Create a new project

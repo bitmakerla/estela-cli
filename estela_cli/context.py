@@ -30,7 +30,7 @@ def test_host(host):
     assert "projects" in response.json()
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="context", short_help=SHORT_HELP)
 def estela_command():
     host = get_host_from_env()
     username = get_username_from_env()

@@ -7,7 +7,7 @@ from estela_cli.login import login
 SHORT_HELP = "List the current user's projects"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="project",short_help=SHORT_HELP)
 def estela_command():
     estela_client = login()
     projects = estela_client.get_projects()

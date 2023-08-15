@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Update a resource")
+@click.group(name="update", short_help="Update a resource")
 def estela_command():
     pass
 

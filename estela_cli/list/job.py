@@ -12,7 +12,7 @@ from estela_cli.utils import (
 SHORT_HELP = "List jobs of a given spider"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="job", short_help=SHORT_HELP)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
 @click.option(

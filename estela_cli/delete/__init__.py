@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Delete a resource")
+@click.group(name="delete", short_help="Delete a resource")
 def estela_command():
     pass
 

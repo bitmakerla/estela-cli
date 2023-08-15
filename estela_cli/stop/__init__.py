@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Stop an active job or cronjob")
+@click.group(name="stop", short_help="Stop an active job or cronjob")
 def estela_command():
     pass
 

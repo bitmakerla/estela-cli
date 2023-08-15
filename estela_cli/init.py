@@ -84,7 +84,7 @@ def gen_dockerfile(requirements_path, entrypoint_path):
         click.echo("{}/{} created successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="init", short_help=SHORT_HELP)
 @click.argument("pid", required=True)
 @click.option(
     "-p",
