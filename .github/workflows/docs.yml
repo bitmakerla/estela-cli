@@ -2,6 +2,12 @@ name: Deploy CLI
 
 on:
   push:
+    branches:
+      - master
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - estela_cli/**
     
 
 jobs:
