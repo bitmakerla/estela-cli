@@ -33,17 +33,22 @@ Successful login. API Token stored in ~/.estela.yaml.
 This will save your estela API key to the file `~/.estela.yaml`, and it is
 needed to access projects associated with your account.  
 
-{:% .highlight }
-> If you have installed estela locally run the following command to obtain the host of the estela api:
-> ```bash
-> $ kubectl get service estela-django-api-service -o custom-columns=':status.loadBalancer.ingress[0].ip' \
->  | tr -d '[:space:]' \
->  | paste -d "/" <(echo "http:/") - 
-> ```
-> To make this command work, you should run `minikube tunnel`.
+<blockquote style="background-color: #ffffcc; border-left: 6px solid #ffee99; padding: 10px;">
+  If you have installed estela locally run the following command to obtain the host of the estela api:
 
-{:% .note }
-> You can use the superuser credentials that you set with `make createsuperuser` to log in.
+```bash
+$ kubectl get service estela-django-api-service -o custom-columns=':status.loadBalancer.ingress[0].ip' \
+| tr -d '[:space:]' \
+| paste -d "/" <(echo "http:/") - 
+```
+
+  To make this command work, you should run `minikube tunnel`.
+
+</blockquote>
+
+<blockquote class="note">
+<b>Note:</b> You can use the superuser credentials that you set with `make createsuperuser` to log in.
+</blockquote>
 
 ### Creating a project
 
@@ -104,8 +109,9 @@ If you are using a Requests project instead of a Scrapy project, you can link it
 
    This command links your Requests project to the corresponding Estela project, allowing you to utilize Estela's features for managing and running your project.
    
-   {:% .highlight}
+   <blockquote style="background-color: #ffffcc; border-left: 6px solid #ffee99; padding: 10px;">
    In order to be discoverable, **spiders should reside in the project's root directory**. However, please note that this will be enhanced in the future to provide greater flexibility.
+   </blockquote>
 
 
 This will create the files `.estela/Dockerfile-estela.yaml` and `estela.yaml`
