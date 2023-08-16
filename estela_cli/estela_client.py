@@ -108,6 +108,7 @@ class EstelaSimpleClient:
     def check_status(self, response, status_code, error_field="detail"):
         if response.status_code != status_code:
             response_json = response.json()
+
             if error_field in response_json:
                 raise Exception(response_json[error_field])
             else:

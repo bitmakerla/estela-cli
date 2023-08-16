@@ -1,24 +1,36 @@
+import logging
 import os
+from string import Template
+from zipfile import ZIP_DEFLATED, ZipFile
+
 import click
 
-from string import Template
-from zipfile import ZipFile, ZIP_DEFLATED
-from estela_cli.utils import (
-    get_project_path,
-    get_estela_settings,
-    _in,
-    get_estela_dockerfile_path,
-)
 from estela_cli.login import login
 from estela_cli.templates import (
-    OK_EMOJI,
-    ESTELA_DIR,
-    ESTELA_YAML_NAME,
     DOCKERFILE,
     DOCKERFILE_NAME,
+    ESTELA_DIR,
+    ESTELA_YAML_NAME,
+    OK_EMOJI,
 )
-import logging
+from estela_cli.utils import (
+    _in,
+    get_estela_dockerfile_path,
+    get_estela_settings,
+    get_project_path,
+)
 
+TRACE_LEVEL = 5
+logging.addLevelName(TRACE_LEVEL, "TRACE")
+
+
+def trace(self, message, *args, **kws):
+    if self.isEnabledFor(TRACE_LEVEL):
+        self._log(TRACE_LEVEL, message, args, **kws)
+
+
+logging.Logger.trace = trace
+logger = logging.getLogger(__name__)
 
 SHORT_HELP = "Deploy Scrapy project to estela API"
 
@@ -26,18 +38,28 @@ SHORT_HELP = "Deploy Scrapy project to estela API"
 def zip_project(pid, project_path, estela_settings):
     relroot = os.path.abspath(os.path.join(project_path, os.pardir))
     archives_to_ignore = estela_settings["deploy"]["ignore"]
-    with ZipFile("{}.zip".format(pid), "w", ZIP_DEFLATED) as zip:
+    zip_file_path = "{}.zip".format(pid)
+    with ZipFile(zip_file_path, "w", ZIP_DEFLATED) as zip_file:
         for root, dirs, files in os.walk(project_path):
             # ignoring dir with data from jobs
             rel_root = root.replace("{}/".format(project_path), "")
             if _in(rel_root, archives_to_ignore):
+                logger.trace(f"Ignoring {rel_root}")
                 continue
+
             # add directory (needed for empty dirs)
-            zip.write(root, os.path.relpath(root, relroot))
+            zip_file.write(root, os.path.relpath(root, relroot))
+
             for file in files:
                 filename = os.path.join(root, file)
+
+                if file == zip_file_path:
+                    logger.trace(f"Ignoring {filename}")
+                    continue
+
                 arcname = os.path.join(os.path.relpath(root, relroot), file)
-                zip.write(filename, arcname)
+                logger.trace(f"Adding {filename} to the zip file.")
+                zip_file.write(filename, arcname)
 
 
 def update_dockerfile(requirements_path, python_version, entrypoint):
@@ -68,49 +90,53 @@ def update_dockerfile(requirements_path, python_version, entrypoint):
 
 
 @click.command(short_help=SHORT_HELP)
-@click.option("--verbose", is_flag=True, help="Show debug logs.")
+@click.option("-v", "--verbose", count=True, help="Show debug logs.")
 def estela_command(verbose):
-    if verbose:
+    if verbose == 1:
         logging.basicConfig(level=logging.DEBUG)
+    elif verbose >= 2:
+        logging.basicConfig(level=TRACE_LEVEL)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     estela_client = login()
-    logging.debug(f"Successfully logged in to {estela_client.host}")
+    logger.debug(f"Successfully logged in to {estela_client.host}")
     estela_settings = get_estela_settings()
-    logging.debug(f"Successfully read estela settings: {estela_settings}")
+    logger.debug(f"Successfully read estela settings: {estela_settings}")
     project_path = get_project_path()
     p_settings = estela_settings["project"]
     pid = p_settings["pid"]
-    logging.debug(f"Project path: {project_path}")
+    logger.debug(f"Project path: {project_path}")
 
     try:
-        logging.debug(f"Verifying project exists...")
+        logger.debug(f"Verifying project exists...")
         estela_client.get_project(pid)
-        logging.debug(f"Verified project exists.")
+        logger.debug(f"Verified project exists.")
     except:
         raise click.ClickException(
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
-    logging.debug(f"Updating Dockerfile...")
+    logger.debug(f"Updating Dockerfile...")
     update_dockerfile(
         p_settings["requirements"],
         p_settings["python"],
         p_settings["entrypoint"],
     )
-    logging.debug(f"Successfully updated Dockerfile.")
+    logger.debug(f"Successfully updated Dockerfile.")
 
-    logging.debug(f"Zipping project for upload to estela...")
+    logger.debug(f"Zipping project for upload to estela...")
     zip_project(pid, project_path, estela_settings)
-    logging.debug(f"Successfully zipped the project.")
+    logger.debug(f"Successfully zipped the project.")
 
     response = {}
     try:
-        logging.debug(f"Uploading project...")
+        logger.debug(f"Uploading project...")
         response = estela_client.upload_project(pid, "{}.zip".format(pid))
-        logging.debug(f"Successfully uploaded the project.")
+        logger.debug(f"Successfully uploaded the project.")
     except Exception as e:
         os.remove("{}.zip".format(pid))
-        logging.debug(str(e))
+        logger.debug(str(e))
         raise click.ClickException("A problem occurred while uploading the project.")
 
     click.echo(
