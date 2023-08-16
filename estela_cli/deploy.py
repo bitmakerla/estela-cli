@@ -1,24 +1,12 @@
 import logging
 import os
-from string import Template
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import click
 
 from estela_cli.login import login
-from estela_cli.templates import (
-    DOCKERFILE,
-    DOCKERFILE_NAME,
-    ESTELA_DIR,
-    ESTELA_YAML_NAME,
-    OK_EMOJI,
-)
-from estela_cli.utils import (
-    _in,
-    get_estela_dockerfile_path,
-    get_estela_settings,
-    get_project_path,
-)
+from estela_cli.templates import ESTELA_DIR, ESTELA_YAML_NAME, OK_EMOJI
+from estela_cli.utils import _in, get_estela_settings, get_project_path
 
 TRACE_LEVEL = 5
 logging.addLevelName(TRACE_LEVEL, "TRACE")
@@ -62,35 +50,17 @@ def zip_project(pid, project_path, estela_settings):
                 zip_file.write(filename, arcname)
 
 
-def update_dockerfile(requirements_path, python_version, entrypoint):
-    dockerfile_path = get_estela_dockerfile_path()
-
+def verify_requrements(requirements_path):
     project_path = get_project_path()
     requirements_local_path = os.path.join(project_path, requirements_path)
     if not os.path.exists(requirements_local_path):
         raise click.ClickException("The requirements file does not exist.")
 
-    template = Template(DOCKERFILE)
-    values = {
-        "python_version": python_version,
-        "requirements_path": requirements_path,
-        "entrypoint": entrypoint,
-    }
-    result = template.substitute(values)
-    with open(dockerfile_path, "r") as dock:
-        if result == dock.read():
-            click.echo(
-                "{}/{} not changes to update.".format(ESTELA_DIR, DOCKERFILE_NAME)
-            )
-            return
-
-    with open(dockerfile_path, "w+") as dockerfile:
-        dockerfile.write(result)
-        click.echo("{}/{} updated successfully.".format(ESTELA_DIR, DOCKERFILE_NAME))
-
 
 @click.command(short_help=SHORT_HELP)
-@click.option("-v", "--verbose", count=True, help="Show debug logs.")
+@click.option(
+    "-v", "--verbose", count=True, help="Increase verbosity level (e.g., -v, -vv)."
+)
 def estela_command(verbose):
     if verbose == 1:
         logging.basicConfig(level=logging.DEBUG)
@@ -117,13 +87,9 @@ def estela_command(verbose):
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
-    logger.debug(f"Updating Dockerfile...")
-    update_dockerfile(
-        p_settings["requirements"],
-        p_settings["python"],
-        p_settings["entrypoint"],
-    )
-    logger.debug(f"Successfully updated Dockerfile.")
+    logger.debug(f"Verifying requirements...")
+    verify_requrements(p_settings["requirements"])
+    logger.debug(f"Successfully verified requirements.")
 
     logger.debug(f"Zipping project for upload to estela...")
     zip_project(pid, project_path, estela_settings)
