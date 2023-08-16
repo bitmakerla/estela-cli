@@ -1,9 +1,9 @@
 from datetime import date, timedelta
 from pathlib import Path
-from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
-from tqdm import tqdm
 
 import requests
+from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+from tqdm import tqdm
 
 from estela_cli import __version__
 
