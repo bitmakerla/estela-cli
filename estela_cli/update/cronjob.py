@@ -7,7 +7,7 @@ SHORT_HELP = "Update a cronjob"
 VALID_STATUSES = ["ACTIVE", "DISABLED"]
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="cronjob", short_help=SHORT_HELP)
 @click.argument("cjid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
@@ -39,9 +39,9 @@ def estela_command(cjid, sid, pid, status, schedule, day, persistent):
     """Update a cronjob
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    CJID is the cronjob's cjid
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - CJID is the cronjob's cjid
     """
 
     estela_client = login()

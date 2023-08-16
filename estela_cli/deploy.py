@@ -57,7 +57,7 @@ def verify_requrements(requirements_path):
         raise click.ClickException("The requirements file does not exist.")
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="deploy", short_help=SHORT_HELP)
 @click.option(
     "-v", "--verbose", count=True, help="Increase verbosity level (e.g., -v, -vv)."
 )

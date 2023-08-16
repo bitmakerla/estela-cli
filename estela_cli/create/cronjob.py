@@ -12,7 +12,7 @@ from estela_cli.utils import (
 SHORT_HELP = "Create a new cronjob"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="cronjob", short_help=SHORT_HELP)
 @click.argument("schedule", required=True, type=click.STRING)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
@@ -51,9 +51,9 @@ def estela_command(sid, pid, schedule, arg, env, tag, day):
     """Create a new cronjob
 
     \b
-    SCHEDULE is the crontab schedule expression for the cronjob
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
+    - SCHEDULE is the crontab schedule expression for the cronjob
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
     """
 
     estela_client = login()

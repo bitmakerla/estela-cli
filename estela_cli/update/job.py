@@ -6,7 +6,7 @@ from estela_cli.utils import get_estela_settings, validate_positive
 SHORT_HELP = "Update a job"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="job", short_help=SHORT_HELP)
 @click.argument("jid", required=True)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
@@ -27,9 +27,9 @@ def estela_command(jid, sid, pid, day, persistent):
     """Update a job
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    JID is the job's jid
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - JID is the job's jid
     """
 
     estela_client = login()

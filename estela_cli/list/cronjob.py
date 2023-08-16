@@ -12,7 +12,7 @@ from estela_cli.utils import (
 SHORT_HELP = "List cronjobs of a given spider"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="cronjob", short_help=SHORT_HELP)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
 @click.option(
@@ -25,9 +25,9 @@ def estela_command(sid, pid, tag):
     """List cronjobs of a given spider
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    TAG is the tag used to filter cronjobs
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - TAG is the tag used to filter cronjobs
     """
 
     estela_client = login()

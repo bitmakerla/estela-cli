@@ -1,0 +1,24 @@
+site_name: Estela CLI
+site_author: Bitmaker
+site_url: https://estela.bitmaker.la/docs
+site_description: "Estela CLI"
+repo_name: bitmakerla/estela-cli
+repo_url: "https://github.com/bitmakerla/estela-cli"
+copyright: Copyright &copy; Bitmaker, 2022
+theme: readthedocs
+
+# Extensions
+markdown_extensions:
+  - attr_list
+  - mkdocs-click
+
+plugins:
+  - search
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Quickstart: quickstart.md
+  - Configuration: configuration.md
+  - Command Line Interface: cli.md
+  - Return to estela Docs: https://estela.bitmaker.la/docs

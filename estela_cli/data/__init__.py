@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Retrieve data from a given job and save it locally")
+@click.group(name="data", short_help="Retrieve data from a given job and save it locally")
 def estela_command():
     pass
 

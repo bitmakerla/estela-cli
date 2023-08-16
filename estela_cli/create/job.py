@@ -12,7 +12,7 @@ from estela_cli.utils import (
 SHORT_HELP = "Create a new job"
 
 
-@click.command(short_help=SHORT_HELP)
+@click.command(name="job", short_help=SHORT_HELP)
 @click.argument("sid", required=True)
 @click.argument("pid", required=False)
 @click.option(
@@ -50,8 +50,8 @@ def estela_command(sid, pid, arg, env, tag, day):
     """Create a new job
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
     """
 
     estela_client = login()

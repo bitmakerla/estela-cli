@@ -1,0 +1,47 @@
+name: Deploy CLI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - docs/**
+      - mkdocs.yml
+      - estela_cli/**
+    
+
+jobs:
+  build_deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+        cache-dependency-path: '**/dev.txt'
+
+    - name: Install Dependencies
+      run: pip install -r requirements/dev.txt
+    
+    - name: Install estela cli
+      run: python setup.py install
+
+    - name: Build
+      run: mkdocs build
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    - name: Deploy to S3 Bucket
+      run: aws s3 sync ./site/ s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ --delete
+
+    - name: Create Cloudfront Invalidation
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"

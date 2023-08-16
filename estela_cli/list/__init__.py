@@ -2,7 +2,7 @@ import click
 import importlib
 
 
-@click.group(short_help="Display the available resources")
+@click.group(name="list", short_help="Display the available resources")
 def estela_command():
     pass
 
