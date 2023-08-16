@@ -14,9 +14,9 @@ def estela_command(jid, sid, pid):
     """Stop an active job
 
     \b
-    JID is the job's jid
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
+    - JID is the job's jid
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
     """
 
     estela_client = login()

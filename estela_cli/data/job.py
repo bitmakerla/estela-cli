@@ -37,11 +37,11 @@ def estela_command(
     """Retrieve data from a given job
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    JID is the job's id
-    DATATYPE is the type of data to retrieve
-    FORMAT is the format to retrieve data
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - JID is the job's id
+    - DATATYPE is the type of data to retrieve
+    - FORMAT is the format to retrieve data
     """
 
     estela_client = login()

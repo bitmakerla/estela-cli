@@ -11,7 +11,7 @@ SHORT_HELP = "Create a new project"
 def estela_command(name):
     """Create a new project
 
-    NAME is the project's name
+    - NAME is the project's name
     """
 
     estela_client = login()

@@ -7,3 +7,4 @@ This page provides documentation for the Estela CLI.
     :command: cli
     :list_subcommands: True
     :depth: 1
+    :remove_ascii_art: True

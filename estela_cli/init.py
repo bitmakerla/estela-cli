@@ -104,7 +104,7 @@ def gen_dockerfile(requirements_path, entrypoint_path):
 def estela_command(pid, platform, requirements):
     """Initialize estela project
 
-    PID is the project's pid
+    - PID is the project's pid
     """
     platform_map = {
         "scrapy": DOCKER_DEFAULT_ENTRYPOINT,

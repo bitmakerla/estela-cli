@@ -25,9 +25,9 @@ def estela_command(sid, pid, tag):
     """List cronjobs of a given spider
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    TAG is the tag used to filter cronjobs
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - TAG is the tag used to filter cronjobs
     """
 
     estela_client = login()

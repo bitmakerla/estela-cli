@@ -13,7 +13,7 @@ SHORT_HELP = "List a project's spiders"
 def estela_command(pid):
     """List spiders of a given project
 
-    PID is the project's pid (active project by default)
+    - PID is the project's pid (active project by default)
     """
 
     estela_client = login()

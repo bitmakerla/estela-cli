@@ -11,7 +11,7 @@ SHORT_HELP = "Delete an existing project"
 def estela_command(pid):
     """Delete a project
 
-    PID is the project's pid
+    - PID is the project's pid
     """
 
     estela_client = login()

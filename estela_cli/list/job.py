@@ -25,9 +25,9 @@ def estela_command(sid, pid, tag):
     """List jobs of a given spider
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    TAG is the tag used to filter jobs
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default
+    - TAG is the tag used to filter jobs
     """
 
     estela_client = login()

@@ -27,9 +27,9 @@ def estela_command(jid, sid, pid, day, persistent):
     """Update a job
 
     \b
-    SID is the spider's sid
-    PID is the project's pid (active project by default)
-    JID is the job's jid
+    - SID is the spider's sid
+    - PID is the project's pid (active project by default)
+    - JID is the job's jid
     """
 
     estela_client = login()
