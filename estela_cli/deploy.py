@@ -58,7 +58,9 @@ def verify_requrements(requirements_path):
 
 
 @click.command(name="deploy", short_help=SHORT_HELP)
-@click.option('--verbose', is_flag=True, help='Show debug logs.')
+@click.option(
+    "-v", "--verbose", count=True, help="Increase verbosity level (e.g., -v, -vv)."
+)
 def estela_command(verbose):
     if verbose == 1:
         logging.basicConfig(level=logging.DEBUG)
