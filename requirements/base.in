@@ -1,5 +1,8 @@
 requests
 docker
 pyyaml
-click
+click==8.1.0
 tabulate
+requests
+requests-toolbelt
+tqdm
