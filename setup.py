@@ -16,6 +16,8 @@ setup(
         "pyyaml",
         "click",
         "tabulate",
+        "requests-toolbelt",
+        "tqdm",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
