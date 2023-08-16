@@ -16,6 +16,7 @@ setup(
         "pyyaml",
         "click",
         "tabulate",
+        "requests",
         "requests-toolbelt",
         "tqdm",
     ],

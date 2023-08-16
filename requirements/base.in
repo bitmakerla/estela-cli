@@ -3,5 +3,6 @@ docker
 pyyaml
 click
 tabulate
+requests
 requests-toolbelt
 tqdm

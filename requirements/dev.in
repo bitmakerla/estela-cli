@@ -1,4 +1,5 @@
 -r test.txt
 pip-tools
 black
+isort
 bumpversion
