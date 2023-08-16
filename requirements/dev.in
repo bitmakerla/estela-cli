@@ -3,5 +3,5 @@ pip-tools
 black==22.3.0
 isort
 bumpversion
-mkdocs
-mkdocs-click
+mkdocs==1.4.3
+mkdocs-click==0.8.0
