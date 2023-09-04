@@ -1,6 +1,7 @@
 # Auth templates
 
 ESTELA_AUTH_NAME = ".estela.yaml"
+ESTELA_CONFIG_NAME = ".estela-config.yaml"
 
 ESTELA_AUTH = """\
 token: $estela_token

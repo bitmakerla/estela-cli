@@ -6,6 +6,7 @@ import click
 
 from datetime import datetime
 from estela_cli.templates import (
+    ESTELA_CONFIG_NAME,
     ESTELA_AUTH_NAME,
     ESTELA_YAML_NAME,
     ESTELA_DIR,
@@ -66,6 +67,21 @@ def get_estela_auth():
         estela_auth = yaml.full_load(estela_auth_yaml)
 
     return estela_auth
+
+
+def get_estela_config():
+    home_path = get_home_path()
+    estela_config_path = os.path.join(home_path, ESTELA_CONFIG_NAME)
+    
+    if not os.path.exists(estela_config_path):
+        file = open(estela_config_path, "x")
+        file.close()
+        return None
+    
+    with open(estela_config_path, "r") as estela_config_yaml:
+        estela_config = yaml.full_load(estela_config_yaml)
+    
+    return estela_config
 
 
 def format_time(date):

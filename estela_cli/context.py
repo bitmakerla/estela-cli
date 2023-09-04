@@ -5,11 +5,12 @@ from estela_cli.login import env_login, yaml_login
 from estela_cli.utils import (
     get_estela_auth,
     get_estela_settings,
+    get_estela_config,
     get_host_from_env,
     get_username_from_env,
     get_password_from_env,
 )
-from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI, BAD_EMOJI
+from estela_cli.templates import ESTELA_AUTH_NAME, ESTELA_CONFIG_NAME, OK_EMOJI, BAD_EMOJI
 
 
 SHORT_HELP = "Show your current context"
@@ -31,10 +32,34 @@ def test_host(host):
 
 
 @click.command(name="context", short_help=SHORT_HELP)
-def estela_command():
+@click.argument("name", required=False)
+def estela_command(name):
+    click.echo(f"Checking your current context for {name}...")
     host = get_host_from_env()
     username = get_username_from_env()
     password = get_password_from_env()
+
+    if name:
+        click.echo(f"Checking context {name}...")
+        estela_config = get_estela_config()
+        
+        if estela_config is None or estela_config.get(name, None) is None:
+            click.echo(
+                "Context {} not found.\nInitializing context...".format(name)
+            )
+        
+        else:
+            click.echo(
+                "Context {} found.".format(name)
+            )
+
+            try:
+                test_host(estela_config[name]["host"])
+                click.echo(OK_HOST.format(estela_config[name]["host"]))
+            except:
+                click.echo(BAD_HOST)
+                return
+        return
 
     if host is None or username is None or password is None:
         estela_auth = get_estela_auth()
