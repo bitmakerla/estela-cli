@@ -4,10 +4,13 @@ import csv
 import json
 import click
 
+from string import Template
 from datetime import datetime
 from estela_cli.templates import (
+    ESTELA_CONFIG_NAME,
     ESTELA_AUTH_NAME,
     ESTELA_YAML_NAME,
+    ESTELA_AUTH,
     ESTELA_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
@@ -55,9 +58,14 @@ def get_estela_settings():
     return estela_config
 
 
-def get_estela_auth():
+def get_estela_auth_path():
     home_path = get_home_path()
     estela_auth_path = os.path.join(home_path, ESTELA_AUTH_NAME)
+    return estela_auth_path
+
+
+def get_estela_auth():
+    estela_auth_path = get_estela_auth_path()
 
     if not os.path.exists(estela_auth_path):
         return None
@@ -66,6 +74,42 @@ def get_estela_auth():
         estela_auth = yaml.full_load(estela_auth_yaml)
 
     return estela_auth
+
+
+def update_estela_auth(host, token):
+    estela_auth_path = get_estela_auth_path()
+    template = Template(ESTELA_AUTH)
+    values = {
+        "estela_host": host,
+        "estela_token": token,
+    }
+    result = template.substitute(values)
+
+    with open(estela_auth_path, "w") as estela_auth_yaml:
+        estela_auth_yaml.write(result)
+        click.echo(
+            "Successful login. API Token stored in ~/{}.".format(ESTELA_AUTH_NAME)
+        )
+
+
+def get_estela_config_path():
+    home_path = get_home_path()
+    estela_config_path = os.path.join(home_path, ESTELA_CONFIG_NAME)
+    return estela_config_path
+
+
+def get_estela_config():
+    estela_config_path = get_estela_config_path()
+    
+    if not os.path.exists(estela_config_path):
+        file = open(estela_config_path, "x")
+        file.close()
+        return {}
+    
+    with open(estela_config_path, "r") as estela_config_yaml:
+        estela_config = yaml.full_load(estela_config_yaml)
+
+    return estela_config
 
 
 def format_time(date):
