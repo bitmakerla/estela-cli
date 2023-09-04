@@ -69,18 +69,23 @@ def get_estela_auth():
     return estela_auth
 
 
-def get_estela_config():
+def get_estela_config_path():
     home_path = get_home_path()
     estela_config_path = os.path.join(home_path, ESTELA_CONFIG_NAME)
+    return estela_config_path
+
+
+def get_estela_config():
+    estela_config_path = get_estela_config_path()
     
     if not os.path.exists(estela_config_path):
         file = open(estela_config_path, "x")
         file.close()
-        return None
+        return {}
     
     with open(estela_config_path, "r") as estela_config_yaml:
         estela_config = yaml.full_load(estela_config_yaml)
-    
+
     return estela_config
 
 

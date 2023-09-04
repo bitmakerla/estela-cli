@@ -1,14 +1,19 @@
+import os
 import click
 import requests
 
+from getpass import getpass
 from estela_cli.login import env_login, yaml_login
+from estela_cli.estela_client import EstelaClient
 from estela_cli.utils import (
+    get_home_path,
     get_estela_auth,
     get_estela_settings,
     get_estela_config,
     get_host_from_env,
     get_username_from_env,
     get_password_from_env,
+    get_estela_config_path,
 )
 from estela_cli.templates import ESTELA_AUTH_NAME, ESTELA_CONFIG_NAME, OK_EMOJI, BAD_EMOJI
 
@@ -31,6 +36,37 @@ def test_host(host):
     assert "projects" in response.json()
 
 
+def prompt_context(name, username=None, password=None, host=None):
+    try:
+        if host is None:
+            host = click.prompt("Host")
+        if username is None:
+            username = click.prompt("Username")
+        if password is None:
+            password = getpass()
+
+        estela_config_path = get_estela_config_path()
+        estela_config = get_estela_config()
+        estela_config["name"] = {
+            "host": host,
+            "username": username,
+            "password": password,
+        }
+        with open(estela_config_path, "w") as estela_config_yaml:
+            estela_config_yaml.write(estela_config)
+            click.echo(
+                "Successful login. Context {} stored in ~/{}.".format(
+                    name, ESTELA_CONFIG_NAME
+                )
+            )
+        estela_client = EstelaClient(host, username, password)
+
+    except:
+        raise Exception("Unable to login with provided credentials.")
+
+    return estela_client
+
+
 @click.command(name="context", short_help=SHORT_HELP)
 @click.argument("name", required=False)
 def estela_command(name):
@@ -42,23 +78,20 @@ def estela_command(name):
     if name:
         click.echo(f"Checking context {name}...")
         estela_config = get_estela_config()
-        
-        if estela_config is None or estela_config.get(name, None) is None:
-            click.echo(
-                "Context {} not found.\nInitializing context...".format(name)
-            )
-        
-        else:
-            click.echo(
-                "Context {} found.".format(name)
-            )
 
+        if estela_config and estela_config.get(name, None):
+            click.echo("Context {} found.".format(name))
             try:
                 test_host(estela_config[name]["host"])
                 click.echo(OK_HOST.format(estela_config[name]["host"]))
             except:
                 click.echo(BAD_HOST)
                 return
+        else:
+            click.echo(
+                "Context {} not found.\nInitializing context...".format(name)
+            )
+            estela_client = prompt_context(name, username, password, host)
         return
 
     if host is None or username is None or password is None:
