@@ -2,16 +2,16 @@ import os
 import click
 
 from getpass import getpass
-from string import Template
 from estela_cli.estela_client import EstelaClient
 from estela_cli.utils import (
     get_host_from_env,
     get_username_from_env,
     get_password_from_env,
     get_estela_auth,
-    get_home_path,
+    update_estela_auth,
+    get_estela_auth_path,
 )
-from estela_cli.templates import ESTELA_AUTH_NAME, ESTELA_AUTH
+from estela_cli.templates import ESTELA_AUTH_NAME
 
 
 DEFAULT_ESTELA_API_HOST = "http://localhost"
@@ -109,8 +109,7 @@ def login(username=None, password=None, host=None):
     help="API endpoint to send the requests. If host is not given, it will be asked",
 )
 def estela_command(username, password, host):
-    home_path = get_home_path()
-    estela_auth_path = os.path.join(home_path, ESTELA_AUTH_NAME)
+    estela_auth_path = get_estela_auth_path()
 
     if os.path.exists(estela_auth_path):
         raise click.ClickException(
@@ -122,15 +121,4 @@ def estela_command(username, password, host):
     except Exception as ex:
         raise click.ClickException(str(ex))
 
-    template = Template(ESTELA_AUTH)
-    values = {
-        "estela_host": estela_client.host,
-        "estela_token": estela_client.token,
-    }
-    result = template.substitute(values)
-
-    with open(estela_auth_path, "w") as estela_auth_yaml:
-        estela_auth_yaml.write(result)
-        click.echo(
-            "Successful login. API Token stored in ~/{}.".format(ESTELA_AUTH_NAME)
-        )
+    update_estela_auth(estela_client.host, estela_client.token)
