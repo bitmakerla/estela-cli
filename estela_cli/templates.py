@@ -41,6 +41,64 @@ RUN mkdir /fifo-data
     app_dir=DOCKER_APP_DIR
 )
 
+DOCKERFILE_SELENIUM = """\
+FROM python:$python_version-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Chrome, Xvfb, dbus, and X11 dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+    wget gnupg2 ca-certificates git \\
+    xvfb xdg-utils dbus \\
+    fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 \\
+    libcups2 libdbus-1-3 libdrm2 libgbm1 libgtk-3-0 \\
+    libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 \\
+    libxrandr2 libxss1 libxtst6 \\
+    && wget -q -O - https://dl.google.com/linux/linux_signing_key.pub \\
+       | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \\
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] \\
+       http://dl.google.com/linux/chrome/deb/ stable main" \\
+       > /etc/apt/sources.list.d/google-chrome.list \\
+    && apt-get update \\
+    && apt-get install -y --no-install-recommends google-chrome-stable \\
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN pip install $entrypoint
+RUN mkdir -p {app_dir}
+WORKDIR {app_dir}
+COPY . {app_dir}
+
+RUN pip install --no-cache-dir -r $requirements_path
+
+# Pre-install chromedriver and fix permissions
+RUN sbase install chromedriver \\
+    && chmod -R 777 /usr/local/lib/python$python_version/site-packages/seleniumbase/drivers/
+
+# Prepare dbus runtime directory
+RUN mkdir -p /run/dbus && chmod 777 /run/dbus
+
+# Entrypoint starts Xvfb and dbus before running the spider
+COPY .estela/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+""".format(
+    app_dir=DOCKER_APP_DIR
+)
+
+SELENIUM_ENTRYPOINT_SH = """\
+#!/bin/bash
+# Start Xvfb for headed Chrome (UC mode needs a display)
+export DISPLAY=:99
+Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
+sleep 2
+
+# Start dbus to suppress Chrome dbus errors
+mkdir -p /run/dbus
+dbus-daemon --system --nopidfile 2>/dev/null || true
+
+exec "$@"
+"""
+
 ESTELA_YAML_NAME = "estela.yaml"
 
 ESTELA_YAML = """\
