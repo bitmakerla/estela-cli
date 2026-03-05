@@ -41,7 +41,7 @@ $ estela --version
 If the installation was successful, you should see the following output:
 ```
 $ estela --version
-estela, version 0.2.7
+estela, version 0.3.0
 ```
 
 ## Next Steps
