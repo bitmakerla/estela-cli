@@ -61,10 +61,11 @@ def estela_command(sid, pid, tag):
             format_tags(job["tags"]),
             format_key_value_pairs(job["args"]),
             format_key_value_pairs(job["env_vars"]),
+            job["limits"].get("memory", 0),
             format_time(job["created"]),
         ]
         for job in jobs
     ]
 
-    headers = ["JID", "STATUS", "TAGS", "ARGS", "ENV VARS", "CREATED"]
+    headers = ["JID", "STATUS", "TAGS", "ARGS", "ENV VARS", "MEMORY_LIMIT", "CREATED"]
     click.echo(tabulate(jobs, headers, numalign="left", tablefmt="plain"))
