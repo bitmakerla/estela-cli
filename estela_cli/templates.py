@@ -68,6 +68,7 @@ RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
 COPY . {app_dir}
 
+RUN pip install --no-cache-dir mitmproxy==9.0.1 --ignore-requires-python
 RUN pip install --no-cache-dir -r $requirements_path
 
 # Pre-install chromedriver and fix permissions
