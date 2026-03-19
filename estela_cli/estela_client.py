@@ -64,10 +64,19 @@ class EstelaSimpleClient:
             headers=headers,
         )
 
-    def get(self, endpoint, params=None, paginated=False):
+    def get(self, endpoint, params=None, paginated=False, page=None):
         if params is None:
             params = {}
         headers = self.get_default_headers()
+
+        if paginated and page is not None:
+            params["page"] = page
+            response = requests.get(
+                self.url_for(endpoint), headers=headers, params=params
+            )
+            self.check_status(response, 200)
+            return response.json()["results"]
+
         response = requests.get(self.url_for(endpoint), headers=headers, params=params)
         if paginated:
             self.check_status(response, 200)
@@ -76,7 +85,7 @@ class EstelaSimpleClient:
             content = response["results"]
             while next_page:
                 response = requests.get(
-                    self.url_for(endpoint), headers=headers, params=params
+                    next_page, headers=headers
                 )
                 self.check_status(response, 200)
                 response = response.json()
@@ -206,14 +215,14 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def get_spider_jobs(self, pid, sid):
+    def get_spider_jobs(self, pid, sid, page=None):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
-        response = self.get(endpoint, paginated=True)
+        response = self.get(endpoint, paginated=True, page=page)
         return response
 
-    def get_spider_jobs_with_tag(self, pid, sid, tag):
+    def get_spider_jobs_with_tag(self, pid, sid, tag, page=None):
         endpoint = "projects/{}/spiders/{}/jobs?tag={}".format(pid, sid, tag)
-        response = self.get(endpoint, paginated=True)
+        response = self.get(endpoint, paginated=True, page=page)
         return response
 
     def get_spider_job(self, pid, sid, jid):
