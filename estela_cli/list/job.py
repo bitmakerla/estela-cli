@@ -21,7 +21,14 @@ SHORT_HELP = "List jobs of a given spider"
     type=click.UNPROCESSED,
     help="Filter jobs by tag",
 )
-def estela_command(sid, pid, tag):
+@click.option(
+    "-p",
+    "--page",
+    default=None,
+    type=int,
+    help="Page number to retrieve (1 = most recent)",
+)
+def estela_command(sid, pid, tag, page):
     """List jobs of a given spider
 
     \b
@@ -48,11 +55,14 @@ def estela_command(sid, pid, tag):
             "The spider does not exist, or you do not have permission to perform this action."
         )
 
-    jobs = []
-    if tag:
-        jobs = estela_client.get_spider_jobs_with_tag(pid, sid, tag)
-    else:
-        jobs = estela_client.get_spider_jobs(pid, sid)
+    try:
+        jobs = []
+        if tag:
+            jobs = estela_client.get_spider_jobs_with_tag(pid, sid, tag, page=page)
+        else:
+            jobs = estela_client.get_spider_jobs(pid, sid, page=page)
+    except Exception:
+        raise click.ClickException("Invalid page number.")
 
     jobs = [
         [
