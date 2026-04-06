@@ -1,4 +1,3 @@
-from datetime import date, timedelta
 from pathlib import Path
 
 import requests
@@ -241,7 +240,7 @@ class EstelaClient(EstelaSimpleClient):
         self.check_status(response, 200)
         return response.json()
 
-    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[], day=None):
+    def create_spider_job(self, pid, sid, args=[], env_vars=[], tags=[], tier=None, day=None):
         endpoint = "projects/{}/spiders/{}/jobs".format(pid, sid)
         data = {
             "args": args,
@@ -249,8 +248,10 @@ class EstelaClient(EstelaSimpleClient):
             "tags": tags,
             "data_status": "PENDING" if day else "PERSISTENT",
         }
+        if tier:
+            data["resource_tier"] = tier
         if day:
-            data["data_expiry_days"] = f"{date.today() + timedelta(days=day)}"
+            data["data_expiry_days"] = day
 
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)
@@ -263,7 +264,7 @@ class EstelaClient(EstelaSimpleClient):
         return response.json()
 
     def create_spider_cronjob(
-        self, pid, sid, schedule="", args=[], env_vars=[], tags=[], day=None
+        self, pid, sid, schedule="", args=[], env_vars=[], tags=[], tier=None, day=None
     ):
         endpoint = "projects/{}/spiders/{}/cronjobs".format(pid, sid)
         data = {
@@ -272,9 +273,10 @@ class EstelaClient(EstelaSimpleClient):
             "cenv_vars": env_vars,
             "ctags": tags,
             "data_status": "PENDING" if day else "PERSISTENT",
+            "data_expiry_days": day if day else 1,
         }
-        if day:
-            data["data_expiry_days"] = f"0/{day}"
+        if tier:
+            data["resource_tier"] = tier
 
         response = self.post(endpoint, data=data)
         self.check_status(response, 201)

@@ -41,13 +41,19 @@ SHORT_HELP = "Create a new cronjob"
     help="Set spider cronjob tag (may have multiple)",
 )
 @click.option(
+    "--tier",
+    "-r",
+    type=click.Choice(["TINY", "XSMALL", "SMALL", "MEDIUM", "LARGE", "XLARGE", "HUGE", "XHUGE"]),
+    help="Set spider cronjob resource tier",
+)
+@click.option(
     "--day",
     "-d",
     type=click.INT,
     callback=validate_positive,
     help="Set spider cronjob data expiry days",
 )
-def estela_command(sid, pid, schedule, arg, env, tag, day):
+def estela_command(sid, pid, schedule, arg, env, tag, tier, day):
     """Create a new cronjob
 
     \b
@@ -67,7 +73,7 @@ def estela_command(sid, pid, schedule, arg, env, tag, day):
             )
     try:
         response = estela_client.create_spider_cronjob(
-            pid, sid, schedule, arg, env, tag, day
+            pid, sid, schedule, arg, env, tag, tier, day
         )
         click.echo("cronjob/{} created.".format(response["name"]))
     except Exception as ex:
