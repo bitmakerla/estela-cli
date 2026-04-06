@@ -40,13 +40,19 @@ SHORT_HELP = "Create a new job"
     help="Set spider job tag (may have multiple)",
 )
 @click.option(
+    "--tier",
+    "-r",
+    type=click.Choice(["TINY", "XSMALL", "SMALL", "MEDIUM", "LARGE", "XLARGE", "HUGE", "XHUGE"]),
+    help="Set spider job resource tier",
+)
+@click.option(
     "--day",
     "-d",
     type=click.INT,
     callback=validate_positive,
     help="Set spider job data expiry days",
 )
-def estela_command(sid, pid, arg, env, tag, day):
+def estela_command(sid, pid, arg, env, tag, tier, day):
     """Create a new job
 
     \b
@@ -64,7 +70,7 @@ def estela_command(sid, pid, arg, env, tag, day):
                 "No active project in the current directory. Please specify the PID."
             )
     try:
-        response = estela_client.create_spider_job(pid, sid, arg, env, tag, day)
+        response = estela_client.create_spider_job(pid, sid, arg, env, tag, tier, day)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:
         raise click.ClickException("Cannot create the job for given SID and PID.")
