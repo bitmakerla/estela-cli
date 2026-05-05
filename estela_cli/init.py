@@ -1,4 +1,5 @@
 import os
+import shutil
 import click
 
 from string import Template
@@ -20,6 +21,7 @@ from estela_cli.templates import (
     DOCKER_DEFAULT_REQUIREMENTS,
     DOCKER_DEFAULT_PYTHON_VERSION,
     ESTELA_DIR,
+    PROXY_CA_NAME,
     SELENIUM_ENTRYPOINT_SH,
 )
 
@@ -93,6 +95,15 @@ def gen_dockerfile(requirements_path, entrypoint_path, platform="scrapy"):
         click.echo("{}/entrypoint.sh created successfully.".format(ESTELA_DIR))
 
 
+def copy_proxy_ca():
+    src = os.path.join(os.path.dirname(__file__), "assets", PROXY_CA_NAME)
+    dst = os.path.join(ESTELA_DIR, PROXY_CA_NAME)
+    if os.path.exists(dst):
+        return
+    shutil.copyfile(src, dst)
+    click.echo("{}/{} created successfully.".format(ESTELA_DIR, PROXY_CA_NAME))
+
+
 @click.command(name="init", short_help=SHORT_HELP)
 @click.argument("pid", required=True)
 @click.option(
@@ -132,4 +143,5 @@ def estela_command(pid, platform, requirements):
     finally:
         click.echo(f"{pid} is initialized as a {platform.capitalize()} project.")
     gen_estela_yaml(estela_client, platform_map[platform], pid)
+    copy_proxy_ca()
     gen_dockerfile(requirements, platform_map[platform], platform)

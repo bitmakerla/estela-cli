@@ -26,8 +26,19 @@ DOCKER_REQUESTS_ENTRYPOINT = "git+https://github.com/bitmakerla/estela-requests-
 
 DOCKERFILE_NAME = "Dockerfile-estela"
 
+PROXY_CA_NAME = "bitmaker-proxy-ca.crt"
+
 DOCKERFILE = """\
 FROM python:$python_version
+
+RUN apt-get update \\
+    && apt-get install -y --no-install-recommends ca-certificates \\
+    && rm -rf /var/lib/apt/lists/*
+COPY .estela/{proxy_ca_name} /usr/local/share/ca-certificates/bitmaker-proxy.crt
+RUN update-ca-certificates
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \\
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\
+    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 # must be in base image
 RUN pip install $entrypoint
@@ -38,7 +49,8 @@ COPY . {app_dir}
 RUN pip install --no-cache-dir -r $requirements_path
 RUN mkdir /fifo-data
 """.format(
-    app_dir=DOCKER_APP_DIR
+    app_dir=DOCKER_APP_DIR,
+    proxy_ca_name=PROXY_CA_NAME,
 )
 
 DOCKERFILE_SELENIUM = """\
@@ -63,6 +75,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
     && apt-get install -y --no-install-recommends google-chrome-stable \\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+COPY .estela/{proxy_ca_name} /usr/local/share/ca-certificates/bitmaker-proxy.crt
+RUN update-ca-certificates
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \\
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\
+    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
 RUN pip install $entrypoint
 RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
@@ -83,7 +101,8 @@ COPY .estela/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 """.format(
-    app_dir=DOCKER_APP_DIR
+    app_dir=DOCKER_APP_DIR,
+    proxy_ca_name=PROXY_CA_NAME,
 )
 
 SELENIUM_ENTRYPOINT_SH = """\
