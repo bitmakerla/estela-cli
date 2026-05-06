@@ -26,20 +26,30 @@ DOCKER_REQUESTS_ENTRYPOINT = "git+https://github.com/bitmakerla/estela-requests-
 
 DOCKERFILE_NAME = "Dockerfile-estela"
 
-PROXY_CA_NAME = "bitmaker-proxy-ca.crt"
+CERTS_DIR = "certs"
 
-DOCKERFILE = """\
-FROM python:$python_version
+PROXY_CA_FILENAME = "proxy-ca.crt"
 
+DEFAULT_PROXY_CA = "bitmaker"
+
+PROXY_CA_DOCKERFILE_BLOCK = """\
 RUN apt-get update \\
     && apt-get install -y --no-install-recommends ca-certificates \\
     && rm -rf /var/lib/apt/lists/*
-COPY .estela/{proxy_ca_name} /usr/local/share/ca-certificates/bitmaker-proxy.crt
+COPY {estela_dir}/{proxy_ca_filename} /usr/local/share/ca-certificates/proxy-ca.crt
 RUN update-ca-certificates
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \\
     SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\
     CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+""".format(
+    estela_dir=ESTELA_DIR,
+    proxy_ca_filename=PROXY_CA_FILENAME,
+)
 
+DOCKERFILE = """\
+FROM python:$python_version
+
+$proxy_ca_block
 # must be in base image
 RUN pip install $entrypoint
 RUN mkdir -p {app_dir}
@@ -50,7 +60,6 @@ RUN pip install --no-cache-dir -r $requirements_path
 RUN mkdir /fifo-data
 """.format(
     app_dir=DOCKER_APP_DIR,
-    proxy_ca_name=PROXY_CA_NAME,
 )
 
 DOCKERFILE_SELENIUM = """\
@@ -75,12 +84,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
     && apt-get install -y --no-install-recommends google-chrome-stable \\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-COPY .estela/{proxy_ca_name} /usr/local/share/ca-certificates/bitmaker-proxy.crt
-RUN update-ca-certificates
-ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt \\
-    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \\
-    CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-
+$proxy_ca_block
 RUN pip install $entrypoint
 RUN mkdir -p {app_dir}
 WORKDIR {app_dir}
@@ -102,7 +106,6 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 """.format(
     app_dir=DOCKER_APP_DIR,
-    proxy_ca_name=PROXY_CA_NAME,
 )
 
 SELENIUM_ENTRYPOINT_SH = """\
@@ -127,6 +130,7 @@ project:
   python: "$python_version"
   requirements: "$requirements_path"
   entrypoint: "$entrypoint"
+  proxy_ca: "$proxy_ca"
 deploy:
   ignore: ["$project_data_path",".git"]
 """

@@ -6,7 +6,7 @@ setup(
     description="Estela Command Line Interface",
     packages=find_packages(),
     include_package_data=True,
-    package_data={"estela_cli": ["assets/*.crt"]},
+    package_data={"estela_cli": ["assets/certs/*.crt"]},
     entry_points={
         "console_scripts": [
             "estela = estela_cli.__main__:cli",
