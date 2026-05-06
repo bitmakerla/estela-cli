@@ -12,6 +12,7 @@ commands = [
     "spider",
     "job",
     "cronjob",
+    "certs",
 ]
 
 for command in commands:
