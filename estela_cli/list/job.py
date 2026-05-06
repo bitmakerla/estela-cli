@@ -71,10 +71,11 @@ def estela_command(sid, pid, tag, page):
             format_tags(job["tags"]),
             format_key_value_pairs(job["args"]),
             format_key_value_pairs(job["env_vars"]),
+            job.get("resource_tier", ""),
             format_time(job["created"]),
         ]
         for job in jobs
     ]
 
-    headers = ["JID", "STATUS", "TAGS", "ARGS", "ENV VARS", "CREATED"]
+    headers = ["JID", "STATUS", "TAGS", "ARGS", "ENV VARS", "RESOURCE TIER", "CREATED"]
     click.echo(tabulate(jobs, headers, numalign="left", tablefmt="plain"))
