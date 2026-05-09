@@ -12,3 +12,4 @@ venv/
 .venv/
 .DS_Store
 site/
+.vscode/
