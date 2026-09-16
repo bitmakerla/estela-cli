@@ -9,6 +9,7 @@ from estela_cli.utils import (
     get_username_from_env,
     get_password_from_env,
 )
+from estela_cli.set_token import whoami
 from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI, BAD_EMOJI
 
 
@@ -19,10 +20,20 @@ OK_HOST = OK_EMOJI + " Host: {}."
 BAD_HOST = "{} Cannot connect to the Host.".format(BAD_EMOJI)
 
 OK_AUTH = "{} Valid Auth.".format(OK_EMOJI)
+OK_AUTH_AS = OK_EMOJI + " Valid Auth, connected as {}."
 BAD_AUTH = "{} Invalid Auth.".format(BAD_EMOJI)
 
 NO_PROJECT = "No active project in the current directory."
 ACTIVE_PROJECT = "Active project: {}."
+
+
+def report_auth(estela_client):
+    """Names the account when the API can tell us, since a key carries no user."""
+    try:
+        username = whoami(estela_client.host, estela_client.token)
+    except Exception:
+        username = None
+    click.echo(OK_AUTH_AS.format(username) if username else OK_AUTH)
 
 
 def test_host(host):
@@ -61,7 +72,7 @@ def estela_command():
             return
         try:
             estela_client = yaml_login()
-            click.echo(OK_AUTH)
+            report_auth(estela_client)
         except:
             click.echo(BAD_AUTH)
             return
@@ -77,7 +88,7 @@ def estela_command():
             return
         try:
             estela_client = env_login()
-            click.echo(OK_AUTH)
+            report_auth(estela_client)
         except:
             click.echo(BAD_AUTH)
             return
