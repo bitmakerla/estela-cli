@@ -1,3 +1,4 @@
+import sys
 from getpass import getpass
 
 import click
@@ -40,12 +41,17 @@ def whoami(host, token):
 
 
 @click.command(name="set-token", short_help=SHORT_HELP)
-@click.argument("token", required=False)
-def estela_command(token):
+def estela_command():
     """Save an API key so this CLI can use it.
 
-    Pass it as TOKEN, or leave it out and it will be asked for without echoing.
-    Run 'estela create-api-token' first if you do not have one.
+    Asks for the key without echoing it. In a script, pipe it in instead:
+
+        echo "$ESTELA_API_KEY" | estela set-token
+
+    The key is never taken as an argument, because arguments are kept in shell
+    history and are visible in the process list while the command runs.
+
+    Run 'estela create-api-token' first if you do not have a key.
     """
     estela_auth = get_estela_auth()
     if estela_auth is None or not estela_auth.get("host"):
@@ -53,8 +59,10 @@ def estela_command(token):
             "{} No host set. Run 'estela set-host <url>' first.".format(BAD_EMOJI)
         )
 
-    if not token:
+    if sys.stdin.isatty():
         token = getpass("Paste your API key: ").strip()
+    else:
+        token = sys.stdin.readline().strip()
     if not token:
         raise click.ClickException("{} No key given.".format(BAD_EMOJI))
 
