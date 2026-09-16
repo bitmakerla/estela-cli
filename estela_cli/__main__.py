@@ -22,6 +22,9 @@ commands = [
     "deploy",
     "login",
     "logout",
+    "set_host",
+    "set_token",
+    "create_api_token",
     "init",
     "context",
     "data",
@@ -29,4 +32,8 @@ commands = [
 
 for command in commands:
     module = importlib.import_module("estela_cli.{}".format(command))
-    cli.add_command(module.estela_command, command)
+    cli.add_command(module.estela_command, command.replace("_", "-"))
+
+
+if __name__ == "__main__":
+    cli()
