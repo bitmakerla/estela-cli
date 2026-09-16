@@ -77,9 +77,9 @@ def estela_command(
                 if next_chunk is None:
                     break
         click.echo("{} Data downloaded succesfully.".format(OK_EMOJI))
-    except:
+    except Exception as e:
         raise click.ClickException(
-            "{} Could not download the job data".format(BAD_EMOJI)
+            "{} Could not download the job data. {}".format(BAD_EMOJI, e)
         )
 
     try:

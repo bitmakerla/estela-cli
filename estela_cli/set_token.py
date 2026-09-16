@@ -12,8 +12,25 @@ from estela_cli import __version__
 SHORT_HELP = "Save an API key created in the web app"
 
 
+SCOPE_MEANING = {
+    "data": "read job data",
+    "run": "run jobs and cronjobs",
+    "manage": "deploy and manage projects",
+}
+
+
+def describe(scopes):
+    """Says what a key can do, in the words the commands use."""
+    if not scopes:
+        return "read-only"
+    return ", ".join(SCOPE_MEANING.get(s, s) for s in scopes)
+
+
 def whoami(host, token):
-    """Returns the username the key belongs to, or None if it is not accepted."""
+    """Returns (username, scopes) for the key, raising if it is not accepted.
+
+    scopes is None when a session was used, since only keys carry them.
+    """
     try:
         response = requests.get(
             "{}/api/auth/whoami".format(host),
@@ -27,7 +44,8 @@ def whoami(host, token):
         raise click.ClickException("{} Could not reach {}.".format(BAD_EMOJI, host))
 
     if response.status_code == 200:
-        return response.json().get("username")
+        body = response.json()
+        return body.get("username"), body.get("scopes")
     if response.status_code in (401, 403):
         detail = ""
         try:
@@ -66,6 +84,15 @@ def estela_command():
     if not token:
         raise click.ClickException("{} No key given.".format(BAD_EMOJI))
 
-    username = whoami(estela_auth["host"], token)
+    username, scopes = whoami(estela_auth["host"], token)
     save_estela_auth(token=token)
     click.echo("{} Logged in as {}. Key stored in ~/{}.".format(OK_EMOJI, username, ESTELA_AUTH_NAME))
+    if scopes is not None:
+        click.echo("This key can: {}.".format(describe(scopes)))
+        missing = [s for s in ("run", "manage") if s not in scopes]
+        if missing:
+            click.echo(
+                "It cannot {}. Create a key with those permissions if you need them.".format(
+                    " or ".join(SCOPE_MEANING[s] for s in missing)
+                )
+            )

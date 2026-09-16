@@ -103,7 +103,9 @@ def estela_command(verbose):
     except Exception as e:
         os.remove("{}.zip".format(pid))
         logger.debug(str(e))
-        raise click.ClickException("A problem occurred while uploading the project.")
+        raise click.ClickException(
+            "A problem occurred while uploading the project. {}".format(e)
+        )
 
     click.echo(
         "{} Project uploaded successfully. Deploy {} underway.".format(

@@ -9,7 +9,7 @@ from estela_cli.utils import (
     get_username_from_env,
     get_password_from_env,
 )
-from estela_cli.set_token import whoami
+from estela_cli.set_token import describe, whoami
 from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI, BAD_EMOJI
 
 
@@ -30,10 +30,12 @@ ACTIVE_PROJECT = "Active project: {}."
 def report_auth(estela_client):
     """Names the account when the API can tell us, since a key carries no user."""
     try:
-        username = whoami(estela_client.host, estela_client.token)
+        username, scopes = whoami(estela_client.host, estela_client.token)
     except Exception:
-        username = None
+        username, scopes = None, None
     click.echo(OK_AUTH_AS.format(username) if username else OK_AUTH)
+    if scopes is not None:
+        click.echo("   This key can: {}.".format(describe(scopes)))
 
 
 def test_host(host):
