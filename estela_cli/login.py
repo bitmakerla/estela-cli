@@ -43,12 +43,10 @@ def yaml_login():
 
     try:
         estela_client = EstelaClient(estela_auth["host"], token=estela_auth["token"])
-    except:
-        raise Exception(
-            "Invalid context stored in ~/{}. Please login again.".format(
-                ESTELA_AUTH_NAME
-            )
-        )
+    except Exception as ex:
+        # The API says why — revoked, expired, unknown — and that is the part
+        # worth repeating, since each one calls for something different.
+        raise Exception(str(ex))
 
     return estela_client
 
@@ -80,11 +78,17 @@ def login(username=None, password=None, host=None):
     except:
         pass
 
-    try:
-        estela_client = yaml_login()
-        return estela_client
-    except Exception as ex:
-        click.echo(str(ex))
+    # A stored key that stops working is not a reason to start asking for a
+    # password: the fix is a new key, so say so and stop.
+    if (get_estela_auth() or {}).get("token"):
+        try:
+            return yaml_login()
+        except Exception as ex:
+            raise click.ClickException(
+                "{}\n"
+                "The key stored in ~/{} is not usable. Run 'estela set-token' with a new "
+                "one, or 'estela create-api-token' to make one.".format(ex, ESTELA_AUTH_NAME)
+            )
 
     try:
         estela_client = prompt_login(username, password, host)
