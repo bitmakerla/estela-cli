@@ -61,6 +61,11 @@ def estela_command():
 
     if sys.stdin.isatty():
         token = getpass("Paste your API key: ").strip()
+        # getpass shows nothing at all, which leaves no sign that a paste landed.
+        # Echoing the length and the non-secret prefix says "I got something"
+        # without putting the key on screen.
+        if token:
+            click.echo("Read {} characters, starting {}.".format(len(token), token[:14]))
     else:
         token = sys.stdin.readline().strip()
     if not token:
