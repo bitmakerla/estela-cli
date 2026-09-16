@@ -4,7 +4,7 @@ import click
 import yaml
 
 from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI
-from estela_cli.utils import get_estela_auth, get_estela_auth_path
+from estela_cli.utils import get_estela_auth, get_estela_auth_path, fail
 
 
 SHORT_HELP = "Remove your credentials"
@@ -22,7 +22,7 @@ def estela_command():
     """
     estela_auth = get_estela_auth()
     if estela_auth is None:
-        raise click.ClickException("You have not logged in. Run 'estela set-token' first.")
+        raise fail("You have not logged in. Run 'estela set-token' first.")
 
     path = get_estela_auth_path()
     estela_auth.pop("token", None)

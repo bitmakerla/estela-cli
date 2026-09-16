@@ -6,12 +6,25 @@ import click
 
 from datetime import datetime
 from estela_cli.templates import (
+    BAD_EMOJI,
     ESTELA_AUTH_NAME,
     ESTELA_YAML_NAME,
     ESTELA_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
 )
+
+
+def fail(message, cause=None):
+    """One shape for every failure the user sees: the mark, then the reason.
+
+    `cause` is the exception the API raised. It says which of several things
+    went wrong — a missing scope reads nothing like an insufficient role — and
+    dropping it leaves only a guess.
+    """
+    if cause:
+        message = "{} {}".format(message, cause)
+    return click.ClickException("{} {}".format(BAD_EMOJI, message))
 
 
 def get_project_path():

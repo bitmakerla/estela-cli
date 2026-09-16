@@ -3,6 +3,7 @@ import click
 from getpass import getpass
 from estela_cli.estela_client import EstelaClient
 from estela_cli.utils import (
+    fail,
     get_host_from_env,
     get_username_from_env,
     get_password_from_env,
@@ -84,7 +85,7 @@ def login(username=None, password=None, host=None):
         try:
             return yaml_login()
         except Exception as ex:
-            raise click.ClickException(
+            raise fail(
                 "{}\n"
                 "The key stored in ~/{} is not usable. Run 'estela set-token' with a new "
                 "one, or 'estela create-api-token' to make one.".format(ex, ESTELA_AUTH_NAME)
@@ -93,7 +94,7 @@ def login(username=None, password=None, host=None):
     try:
         estela_client = prompt_login(username, password, host)
     except Exception as ex:
-        raise click.ClickException(str(ex))
+        raise fail(str(ex))
 
     return estela_client
 
@@ -116,9 +117,8 @@ def estela_command(username, password, host):
     # someone is already logged in.
     estela_auth = get_estela_auth() or {}
     if estela_auth.get("token"):
-        raise click.ClickException(
-            "You already logged in. To change credentials run 'estela logout' first."
-        )
+        raise fail(
+            "You already logged in. To change credentials run 'estela logout' first.", ex)
 
     if host is None:
         host = estela_auth.get("host")
@@ -126,7 +126,7 @@ def estela_command(username, password, host):
     try:
         estela_client = prompt_login(username, password, host)
     except Exception as ex:
-        raise click.ClickException(str(ex))
+        raise fail(str(ex))
 
     save_estela_auth(host=estela_client.host, token=estela_client.token)
     click.echo("Successful login. API Token stored in ~/{}.".format(ESTELA_AUTH_NAME))

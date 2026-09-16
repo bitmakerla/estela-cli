@@ -5,7 +5,7 @@ from contextlib import contextmanager
 import click
 
 from estela_cli.templates import BAD_EMOJI, CLOCK_EMOJI
-from estela_cli.utils import get_estela_auth
+from estela_cli.utils import get_estela_auth, fail
 
 
 SHORT_HELP = "Open the browser to create an API key"
@@ -54,7 +54,7 @@ def estela_command(web_host):
     estela_auth = get_estela_auth()
     if web_host is None:
         if estela_auth is None or not estela_auth.get("host"):
-            raise click.ClickException(
+            raise fail(
                 "{} No host set. Run 'estela set-host <url>' first, or pass --web-host.".format(BAD_EMOJI)
             )
         web_host = web_url_for(estela_auth["host"])

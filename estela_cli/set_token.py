@@ -5,7 +5,7 @@ import click
 import requests
 
 from estela_cli.templates import BAD_EMOJI, ESTELA_AUTH_NAME, OK_EMOJI
-from estela_cli.utils import get_estela_auth, save_estela_auth
+from estela_cli.utils import get_estela_auth, save_estela_auth, fail
 from estela_cli import __version__
 
 
@@ -41,7 +41,7 @@ def whoami(host, token):
             timeout=10,
         )
     except Exception:
-        raise click.ClickException("{} Could not reach {}.".format(BAD_EMOJI, host))
+        raise fail("{} Could not reach {}.".format(BAD_EMOJI, host))
 
     if response.status_code == 200:
         body = response.json()
@@ -52,8 +52,8 @@ def whoami(host, token):
             detail = " " + response.json().get("detail", "")
         except Exception:
             pass
-        raise click.ClickException("{} The API rejected that key.{}".format(BAD_EMOJI, detail))
-    raise click.ClickException(
+        raise fail("{} The API rejected that key.{}".format(BAD_EMOJI, detail))
+    raise fail(
         "{} {} answered {}.".format(BAD_EMOJI, host, response.status_code)
     )
 
@@ -73,7 +73,7 @@ def estela_command():
     """
     estela_auth = get_estela_auth()
     if estela_auth is None or not estela_auth.get("host"):
-        raise click.ClickException(
+        raise fail(
             "{} No host set. Run 'estela set-host <url>' first.".format(BAD_EMOJI)
         )
 
@@ -82,7 +82,7 @@ def estela_command():
     else:
         token = sys.stdin.readline().strip()
     if not token:
-        raise click.ClickException("{} No key given.".format(BAD_EMOJI))
+        raise fail("{} No key given.".format(BAD_EMOJI))
 
     username, scopes = whoami(estela_auth["host"], token)
     save_estela_auth(token=token)

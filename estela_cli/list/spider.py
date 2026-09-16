@@ -2,7 +2,7 @@ import click
 
 from tabulate import tabulate
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings
+from estela_cli.utils import get_estela_settings, fail
 
 
 SHORT_HELP = "List a project's spiders"
@@ -23,15 +23,16 @@ def estela_command(pid):
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
 
     try:
         estela_client.get_project(pid)
     except Exception as ex:
-        raise click.ClickException(
-            "The project does not exist, or you do not have permission to perform this action."
+        raise fail(
+            "The project does not exist, or you do not have permission to perform this action.",
+            ex,
         )
 
     spiders = estela_client.get_spiders(pid)

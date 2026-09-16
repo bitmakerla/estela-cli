@@ -1,7 +1,7 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings, validate_positive
+from estela_cli.utils import get_estela_settings, validate_positive, fail
 
 SHORT_HELP = "Update a job"
 
@@ -38,12 +38,12 @@ def estela_command(jid, sid, pid, day, persistent):
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
 
     if all([option is None for option in [day, persistent]]):
-        raise click.ClickException(
+        raise fail(
             "No update option was provided to update the job. Please specify at least one."
         )
 
@@ -51,6 +51,7 @@ def estela_command(jid, sid, pid, day, persistent):
         response = estela_client.update_spider_job(pid, sid, jid, day, persistent)
         click.echo(f"job/spider-job-{jid}-{pid} updated.")
     except Exception as ex:
-        raise click.ClickException(
-            "Some values are invalid or you do not have permission to perform this action."
+        raise fail(
+            "Some values are invalid or you do not have permission to perform this action.",
+            ex,
         )

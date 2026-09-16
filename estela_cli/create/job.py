@@ -2,6 +2,7 @@ import click
 
 from estela_cli.login import login
 from estela_cli.utils import (
+    fail,
     get_estela_settings,
     validate_key_value_format,
     set_tag_format,
@@ -66,11 +67,11 @@ def estela_command(sid, pid, arg, env, tag, tier, day):
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
     try:
         response = estela_client.create_spider_job(pid, sid, arg, env, tag, tier, day)
         click.echo("job/{} created.".format(response["name"]))
     except Exception as ex:
-        raise click.ClickException("Cannot create the job for given SID and PID.")
+        raise fail("Cannot create the job for given SID and PID.", ex)
