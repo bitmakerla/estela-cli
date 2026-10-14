@@ -1,5 +1,7 @@
 import click
 
+from estela_cli.utils import fail
+
 from estela_cli.login import login
 
 
@@ -23,4 +25,4 @@ def estela_command(name):
             f"Hint: Use 'estela init {response['pid']} -p requests' to initialize a Requests project."
         )
     except Exception as ex:
-        raise click.ClickException(str(ex))
+        raise fail(str(ex))

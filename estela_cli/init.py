@@ -5,6 +5,7 @@ import click
 from string import Template
 from estela_cli.login import login
 from estela_cli.utils import (
+    fail,
     get_project_path,
     get_estela_yaml_path,
     get_estela_dockerfile_path,
@@ -38,7 +39,7 @@ def gen_estela_yaml(estela_client, entrypoint_path, proxy_ca, pid=None):
     estela_yaml_path = get_estela_yaml_path()
 
     if os.path.exists(estela_yaml_path):
-        raise click.ClickException("{} file already exists.".format(ESTELA_YAML_NAME))
+        raise fail("{} file already exists.".format(ESTELA_YAML_NAME))
 
     try:
         if pid is None:
@@ -46,7 +47,7 @@ def gen_estela_yaml(estela_client, entrypoint_path, proxy_ca, pid=None):
 
         project = estela_client.get_project(pid)
     except:
-        raise click.ClickException(
+        raise fail(
             "The project with id '{}' does not exists.".format(pid)
         )
 
@@ -71,7 +72,7 @@ def gen_dockerfile(requirements_path, entrypoint_path, proxy_ca, platform="scrap
     dockerfile_path = get_estela_dockerfile_path()
 
     if os.path.exists(dockerfile_path):
-        raise click.ClickException(
+        raise fail(
             "{}/{} already exists.".format(ESTELA_DIR, DOCKERFILE_NAME)
         )
 
@@ -132,7 +133,7 @@ def copy_proxy_ca(proxy_ca):
     if src is None:
         return
     if not os.path.exists(src):
-        raise click.ClickException(
+        raise fail(
             "Proxy CA cert not found: {}. Use 'estela list certs' to see "
             "available bundled certs, or pass a local path.".format(src)
         )
@@ -188,7 +189,7 @@ def estela_command(pid, platform, requirements, proxy_ca):
     try:
         response = estela_client.update_project(pid, framework=framework, action="update")
     except Exception as e:
-        raise click.ClickException("Could not update framework project: %s" % str(e))
+        raise fail("Could not update framework project: %s" % str(e))
     finally:
         click.echo(f"{pid} is initialized as a {platform.capitalize()} project.")
     gen_estela_yaml(estela_client, platform_map[platform], proxy_ca, pid)

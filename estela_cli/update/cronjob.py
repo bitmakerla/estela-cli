@@ -1,7 +1,7 @@
 import click
 
 from estela_cli.login import login
-from estela_cli.utils import get_estela_settings, validate_positive
+from estela_cli.utils import get_estela_settings, validate_positive, fail
 
 SHORT_HELP = "Update a cronjob"
 VALID_STATUSES = ["ACTIVE", "DISABLED"]
@@ -50,12 +50,12 @@ def estela_command(cjid, sid, pid, status, schedule, day, persistent):
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
 
     if all([option is None for option in [status, schedule, day, persistent]]):
-        raise click.ClickException(
+        raise fail(
             "No update option was provided to update the cronjob. Please specify at least one."
         )
 
@@ -65,6 +65,7 @@ def estela_command(cjid, sid, pid, status, schedule, day, persistent):
         )
         click.echo(f"cronjob/spider-cjob-{cjid}-{pid} updated.")
     except Exception as ex:
-        raise click.ClickException(
-            "Some values are invalid or you do not have permission to perform this action."
+        raise fail(
+            "Some values are invalid or you do not have permission to perform this action.",
+            ex,
         )

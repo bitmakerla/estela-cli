@@ -4,7 +4,7 @@ import click
 
 from estela_cli.login import login
 from estela_cli.templates import BAD_EMOJI, CLOCK_EMOJI, OK_EMOJI
-from estela_cli.utils import get_estela_settings, save_chunk_data, save_data
+from estela_cli.utils import get_estela_settings, save_chunk_data, save_data, fail
 
 SHORT_HELP = "Retrieve data from a job"
 ALLOWED_DATA_TYPES = ["items", "requests", "logs", "stats"]
@@ -50,7 +50,7 @@ def estela_command(
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
 
@@ -77,13 +77,13 @@ def estela_command(
                 if next_chunk is None:
                     break
         click.echo("{} Data downloaded succesfully.".format(OK_EMOJI))
-    except:
-        raise click.ClickException(
-            "{} Could not download the job data".format(BAD_EMOJI)
+    except Exception as e:
+        raise fail(
+            "{} Could not download the job data. {}".format(BAD_EMOJI, e)
         )
 
     try:
         save_data(filename, tmp_filename, format)
         click.echo("{} Data saved succesfully.".format(OK_EMOJI))
     except:
-        raise click.ClickException("{} Could not save the job data".format(BAD_EMOJI))
+        raise fail("{} Could not save the job data".format(BAD_EMOJI))

@@ -3,6 +3,7 @@ import click
 from tabulate import tabulate
 from estela_cli.login import login
 from estela_cli.utils import (
+    fail,
     get_estela_settings,
     format_time,
     format_key_value_pairs,
@@ -37,15 +38,16 @@ def estela_command(sid, pid, tag):
             estela_settings = get_estela_settings()
             pid = estela_settings["project"]["pid"]
         except:
-            raise click.ClickException(
+            raise fail(
                 "No active project in the current directory. Please specify the PID."
             )
 
     try:
         estela_client.get_spider(pid, sid)
     except Exception as ex:
-        raise click.ClickException(
-            "The spider does not exist, or you do not have permission to perform this action."
+        raise fail(
+            "The spider does not exist, or you do not have permission to perform this action.",
+            ex,
         )
 
     cronjobs = []

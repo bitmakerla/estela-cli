@@ -6,12 +6,25 @@ import click
 
 from datetime import datetime
 from estela_cli.templates import (
+    BAD_EMOJI,
     ESTELA_AUTH_NAME,
     ESTELA_YAML_NAME,
     ESTELA_DIR,
     DATA_DIR,
     DOCKERFILE_NAME,
 )
+
+
+def fail(message, cause=None):
+    """One shape for every failure the user sees: the mark, then the reason.
+
+    `cause` is the exception the API raised. It says which of several things
+    went wrong — a missing scope reads nothing like an insufficient role — and
+    dropping it leaves only a guess.
+    """
+    if cause:
+        message = "{} {}".format(message, cause)
+    return click.ClickException("{} {}".format(BAD_EMOJI, message))
 
 
 def get_project_path():
@@ -66,6 +79,29 @@ def get_estela_auth():
         estela_auth = yaml.full_load(estela_auth_yaml)
 
     return estela_auth
+
+
+def get_estela_auth_path():
+    return os.path.join(get_home_path(), ESTELA_AUTH_NAME)
+
+
+def save_estela_auth(host=None, token=None):
+    """Writes ~/.estela.yaml, keeping whatever field is not being replaced.
+
+    The file holds a live credential, so it is written 0600 — readable only by
+    its owner.
+    """
+    current = get_estela_auth() or {}
+    if host is not None:
+        current["host"] = host.rstrip("/")
+    if token is not None:
+        current["token"] = token
+
+    path = get_estela_auth_path()
+    with open(path, "w") as estela_auth_yaml:
+        yaml.safe_dump(current, estela_auth_yaml, default_flow_style=False)
+    os.chmod(path, 0o600)
+    return current
 
 
 def format_time(date):

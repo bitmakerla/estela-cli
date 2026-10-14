@@ -1,5 +1,7 @@
 import click
 
+from estela_cli.utils import fail
+
 from estela_cli.login import login
 
 
@@ -19,6 +21,7 @@ def estela_command(pid):
         estela_client.delete_project(pid)
         click.echo("project/{} deleted.".format(pid))
     except Exception as ex:
-        raise click.ClickException(
-            "The project does not exist, or you do not have permission to perform this action."
+        raise fail(
+            "The project does not exist, or you do not have permission to perform this action.",
+            ex,
         )

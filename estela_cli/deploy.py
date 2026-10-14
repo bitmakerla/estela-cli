@@ -6,7 +6,7 @@ import click
 
 from estela_cli.login import login
 from estela_cli.templates import ESTELA_DIR, ESTELA_YAML_NAME, OK_EMOJI
-from estela_cli.utils import _in, get_estela_settings, get_project_path
+from estela_cli.utils import _in, get_estela_settings, get_project_path, fail
 
 TRACE_LEVEL = 5
 logging.addLevelName(TRACE_LEVEL, "TRACE")
@@ -54,7 +54,7 @@ def verify_requrements(requirements_path):
     project_path = get_project_path()
     requirements_local_path = os.path.join(project_path, requirements_path)
     if not os.path.exists(requirements_local_path):
-        raise click.ClickException("The requirements file does not exist.")
+        raise fail("The requirements file does not exist.")
 
 
 @click.command(name="deploy", short_help=SHORT_HELP)
@@ -83,7 +83,7 @@ def estela_command(verbose):
         estela_client.get_project(pid)
         logger.debug(f"Verified project exists.")
     except:
-        raise click.ClickException(
+        raise fail(
             "Invalid project at {}/{}.".format(ESTELA_DIR, ESTELA_YAML_NAME)
         )
 
@@ -103,7 +103,9 @@ def estela_command(verbose):
     except Exception as e:
         os.remove("{}.zip".format(pid))
         logger.debug(str(e))
-        raise click.ClickException("A problem occurred while uploading the project.")
+        raise fail(
+            "A problem occurred while uploading the project. {}".format(e)
+        )
 
     click.echo(
         "{} Project uploaded successfully. Deploy {} underway.".format(
