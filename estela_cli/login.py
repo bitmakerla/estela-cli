@@ -15,12 +15,10 @@ from estela_cli.utils import (
     get_username_from_env,
     get_password_from_env,
     get_estela_auth,
+    get_host,
     save_estela_auth,
 )
 from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI
-
-
-DEFAULT_ESTELA_API_HOST = "http://localhost"
 
 # How often to ask whether the code was approved.
 POLL_SECONDS = 5
@@ -53,7 +51,7 @@ def yaml_login():
         )
 
     try:
-        estela_client = EstelaClient(estela_auth["host"], token=estela_auth["token"])
+        estela_client = EstelaClient(get_host(), token=estela_auth["token"])
     except Exception as ex:
         # The API says why — revoked, expired, unknown — and that is the part
         # worth repeating, since each one calls for something different.
@@ -110,7 +108,8 @@ def quiet_fds():
 @click.command(name="login", short_help=SHORT_HELP)
 @click.option(
     "--host",
-    help="The estela API to log in to. Defaults to the one 'estela set-host' stored.",
+    help="The estela API to log in to. Defaults to the one 'estela set-host' stored, "
+    "else https://cloud.bitmaker.dev.",
 )
 @click.option(
     "--device",
@@ -131,9 +130,7 @@ def estela_command(host, device):
     if estela_auth.get("token"):
         raise fail("You already logged in. To change credentials run 'estela logout' first.")
 
-    host = (host or estela_auth.get("host") or "").rstrip("/")
-    if not host:
-        raise fail("No host set. Run 'estela set-host <url>' first, or pass --host.")
+    host = (host or get_host()).rstrip("/")
 
     headers = {"User-Agent": "estela-cli/{}".format(__version__)}
     try:

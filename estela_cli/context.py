@@ -4,6 +4,7 @@ import requests
 from estela_cli.login import env_login, yaml_login
 from estela_cli.utils import (
     get_estela_auth,
+    get_host,
     get_estela_settings,
     get_host_from_env,
     get_username_from_env,
@@ -67,8 +68,8 @@ def estela_command():
         )
 
         try:
-            test_host(estela_auth["host"])
-            click.echo(OK_HOST.format(estela_auth["host"]))
+            test_host(get_host())
+            click.echo(OK_HOST.format(get_host()))
         except:
             click.echo(BAD_HOST)
             return

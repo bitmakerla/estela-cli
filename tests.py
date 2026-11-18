@@ -2,7 +2,10 @@ import os
 import unittest
 
 from estela_cli.estela_client import EstelaClient
-from estela_cli.login import login, DEFAULT_ESTELA_API_HOST
+from estela_cli.login import login
+
+# These tests run against an estela on this machine.
+DEFAULT_ESTELA_API_HOST = "http://localhost"
 from dotenv import load_dotenv
 
 

@@ -14,11 +14,9 @@ $ estela create job --help
 ```
 
 ## Basic Usage
-To start using the estela CLI with estela, first, set the estela API to use
-and log in:
+To start using the estela CLI with estela, first, you need to log in:
 
 ```bash
-$ estela set-host https://api.cloud.bitmaker.dev
 $ estela login
 ```
 
@@ -38,6 +36,10 @@ This will save your estela API key to the file `~/.estela.yaml`, and it is
 needed to access projects associated with your account. On a machine with no
 browser, run `estela login --device` and open the link it prints on another
 device.  
+
+estela CLI logs in to https://cloud.bitmaker.dev. To use another estela, run
+`estela set-host <url>` before `estela login`. Changing the host logs you out,
+since a key works on one estela only.
 
 <blockquote style="background-color: #ffffcc; border-left: 6px solid #ffee99; padding: 10px;">
   If you have installed estela locally run the following command to obtain the host of the estela api, and pass it to `estela set-host`:

@@ -15,6 +15,10 @@ from estela_cli.templates import (
 )
 
 
+# The estela this CLI talks to unless 'estela set-host' chose another.
+DEFAULT_HOST = "https://cloud.bitmaker.dev"
+
+
 def fail(message, cause=None):
     """One shape for every failure the user sees: the mark, then the reason.
 
@@ -81,6 +85,11 @@ def get_estela_auth():
     return estela_auth
 
 
+def get_host():
+    """The estela API to use: the one 'estela set-host' stored, else DEFAULT_HOST."""
+    return (get_estela_auth() or {}).get("host") or DEFAULT_HOST
+
+
 def get_estela_auth_path():
     return os.path.join(get_home_path(), ESTELA_AUTH_NAME)
 
@@ -89,13 +98,15 @@ def save_estela_auth(host=None, token=None):
     """Writes ~/.estela.yaml, keeping whatever field is not being replaced.
 
     The file holds a live credential, so it is written 0600 — readable only by
-    its owner.
+    its owner. An empty token forgets the stored one.
     """
     current = get_estela_auth() or {}
     if host is not None:
         current["host"] = host.rstrip("/")
-    if token is not None:
+    if token:
         current["token"] = token
+    elif token == "":
+        current.pop("token", None)
 
     path = get_estela_auth_path()
     with open(path, "w") as estela_auth_yaml:
