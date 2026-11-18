@@ -14,27 +14,33 @@ $ estela create job --help
 ```
 
 ## Basic Usage
-To start using the estela CLI with estela, first, you need to log in:
+To start using the estela CLI with estela, first, set the estela API to use
+and log in:
 
 ```bash
+$ estela set-host https://api.cloud.bitmaker.dev
 $ estela login
 ```
 
-estela CLI will prompt for your credentials. You should see the following output:
+estela CLI shows a code and opens the browser. Check that the page shows the
+same code, choose what the key may do, and approve it. You should see the
+following output:
 
 ```bash
 $ estela login
-Host [http://localhost]:
-Username: admin
-Password:
-Successful login. API Token stored in ~/.estela.yaml.
+Your code: KDTW-QXRB
+Opened https://cloud.bitmaker.dev/settings/apiKeys?code=KDTW-QXRB
+Check that the page shows the same code, then approve it. Waiting...
+✅ Logged in as admin. Key stored in ~/.estela.yaml.
 ```
 
 This will save your estela API key to the file `~/.estela.yaml`, and it is
-needed to access projects associated with your account.  
+needed to access projects associated with your account. On a machine with no
+browser, run `estela login --device` and open the link it prints on another
+device.  
 
 <blockquote style="background-color: #ffffcc; border-left: 6px solid #ffee99; padding: 10px;">
-  If you have installed estela locally run the following command to obtain the host of the estela api:
+  If you have installed estela locally run the following command to obtain the host of the estela api, and pass it to `estela set-host`:
 
 ```bash
 $ kubectl get service estela-django-api-service -o custom-columns=':status.loadBalancer.ingress[0].ip' \
@@ -47,7 +53,7 @@ $ kubectl get service estela-django-api-service -o custom-columns=':status.loadB
 </blockquote>
 
 <blockquote class="note">
-<b>Note:</b> You can use the superuser credentials that you set with `make createsuperuser` to log in.
+<b>Note:</b> You can use the superuser credentials that you set with `make createsuperuser` to sign in to the web and approve the code.
 </blockquote>
 
 ### Creating a project

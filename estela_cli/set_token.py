@@ -16,6 +16,7 @@ SCOPE_MEANING = {
     "data": "read job data",
     "run": "run jobs and cronjobs",
     "manage": "deploy and manage projects",
+    "operator": "reach every customer's projects",
 }
 
 
@@ -69,7 +70,7 @@ def estela_command():
     The key is never taken as an argument, because arguments are kept in shell
     history and are visible in the process list while the command runs.
 
-    Run 'estela create-api-token' first if you do not have a key.
+    To create a key from the browser instead, run 'estela login'.
     """
     estela_auth = get_estela_auth()
     if estela_auth is None or not estela_auth.get("host"):
