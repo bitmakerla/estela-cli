@@ -20,9 +20,6 @@ from estela_cli.utils import (
 )
 from estela_cli.templates import ESTELA_AUTH_NAME, OK_EMOJI
 
-# How often to ask whether the code was approved.
-POLL_SECONDS = 5
-
 
 SHORT_HELP = "Log in from the browser"
 
@@ -161,7 +158,7 @@ def estela_command(host, device):
     while True:
         if time.time() > deadline:
             raise fail("The code expired. Run 'estela login' again.")
-        time.sleep(POLL_SECONDS)
+        time.sleep(5)
         try:
             me = requests.get("{}/api/auth/whoami".format(host), headers=headers, timeout=10)
         except requests.RequestException:
