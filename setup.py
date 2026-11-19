@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="estela",
-    version="0.3.5",
+    version="0.4.0",
     description="Estela Command Line Interface",
     packages=find_packages(),
     include_package_data=True,

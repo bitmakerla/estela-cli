@@ -22,7 +22,7 @@ def estela_command():
     """
     estela_auth = get_estela_auth()
     if estela_auth is None:
-        raise fail("You have not logged in. Run 'estela set-token' first.")
+        raise fail("You have not logged in. Run 'estela login' first.")
 
     path = get_estela_auth_path()
     estela_auth.pop("token", None)

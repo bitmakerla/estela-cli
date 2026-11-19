@@ -24,7 +24,6 @@ commands = [
     "logout",
     "set_host",
     "set_token",
-    "create_api_token",
     "init",
     "context",
     "data",

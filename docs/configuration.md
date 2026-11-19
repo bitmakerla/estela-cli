@@ -15,4 +15,4 @@ The following is a list of the currently available configuration options:
 |`requirements`|Path to the projects' requirements file.|`estela.yaml`|
 |`ignore`|List of comma-separated paths of files and directories to ignore when deploying your project's image. E.g., it should include your virtual environment.|`estela.yaml`|
 |`token`|API key to use for deployments. You should not have to configure this setting as it is configured inside `~/.estela.yaml` via `estela login`.|`~/.estela.yaml`|
-|`host`|The address of the estela application to which you connect. You are prompted for this value when running `estela login`. If you wish to use a different host, you should first `estela logout` and then `estela login` again.|`~/.estela.yaml`|
+|`host`|The address of the estela application to which you connect. It is https://cloud.bitmaker.dev unless you set another with `estela set-host`, which logs you out, since a key works on one estela only. Then run `estela login` again.|`~/.estela.yaml`|
