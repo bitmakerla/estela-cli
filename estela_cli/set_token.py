@@ -5,7 +5,7 @@ import click
 import requests
 
 from estela_cli.templates import BAD_EMOJI, ESTELA_AUTH_NAME, OK_EMOJI
-from estela_cli.utils import get_estela_auth, save_estela_auth, fail
+from estela_cli.utils import get_host, save_estela_auth, fail
 from estela_cli import __version__
 
 
@@ -16,6 +16,7 @@ SCOPE_MEANING = {
     "data": "read job data",
     "run": "run jobs and cronjobs",
     "manage": "deploy and manage projects",
+    "operator": "reach every customer's projects",
 }
 
 
@@ -69,14 +70,8 @@ def estela_command():
     The key is never taken as an argument, because arguments are kept in shell
     history and are visible in the process list while the command runs.
 
-    Run 'estela create-api-token' first if you do not have a key.
+    To create a key from the browser instead, run 'estela login'.
     """
-    estela_auth = get_estela_auth()
-    if estela_auth is None or not estela_auth.get("host"):
-        raise fail(
-            "{} No host set. Run 'estela set-host <url>' first.".format(BAD_EMOJI)
-        )
-
     if sys.stdin.isatty():
         token = getpass("Paste your API key: ").strip()
     else:
@@ -84,7 +79,7 @@ def estela_command():
     if not token:
         raise fail("{} No key given.".format(BAD_EMOJI))
 
-    username, scopes = whoami(estela_auth["host"], token)
+    username, scopes = whoami(get_host(), token)
     save_estela_auth(token=token)
     click.echo("{} Logged in as {}. Key stored in ~/{}.".format(OK_EMOJI, username, ESTELA_AUTH_NAME))
     if scopes is not None:
